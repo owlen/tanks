@@ -12,7 +12,7 @@ from movement import Players
 @Component()
 class Tank:
     player: int
-    size: float = 0.2
+    # size: float = 0.2
     weight: int = 2000
 
 
@@ -26,10 +26,6 @@ class GiveTankMoveCommands(System):
             Tank,
         ]),
     }
-
-    def enter_filter_model(self, entity):
-        geometry = entity[Geometry]
-        print(geometry)
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tank']:
@@ -57,25 +53,21 @@ class GiveTankMoveCommands(System):
 
 class TankTouchesBoundary(System):
     entity_filters = {
-        'tanks': and_filter([
-            Model,
-            Scene,
-            Position,
-            Tank,
-        ]),
+        # 'tanks': and_filter([Position, Tank])
+        'tanks': Tank
     }
 
     def update(self, entities_by_filter):
         for entity in set(entities_by_filter['tanks']):
-            model = entity[Model]
             position = entity[Position]
-            tank = entity[Tank]
+            print(position)
 
-            z = position.value.z
-            size = tank.size
+            if position.value.z >= 3:
+                position.value.z = 3
+            elif position.value.z <= -3:
+                position.value.z = -3
 
-            if z + size > 1:
-                position.value.z = 1 - size
-            elif (z - size) < -1:
-                position.value.z = -1 + size
-            model.node.set_z(position.value.z)
+            if position.value.x >= 3:
+                position.value.x = 3
+            elif position.value.x <= -3:
+                position.value.x = -3

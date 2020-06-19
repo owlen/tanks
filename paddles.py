@@ -30,7 +30,7 @@ class ResizePaddles(System):
         for entity in entities_by_filter['paddle']:
             model = entity[Model]
             paddle = entity[Paddle]
-            model.node.set_scale(paddle.size)
+            # model.node.set_scale(paddle.size)
 
 
 class GivePaddlesMoveCommands(System):

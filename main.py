@@ -2,7 +2,11 @@ from wecs import boilerplate
 
 
 def run_game():
-    boilerplate.run_game()
+    boilerplate.run_game(
+        console=False,
+        keybindings=False,
+        debug_keys=True
+    )
 
 
 if __name__ == '__main__':
