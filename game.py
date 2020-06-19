@@ -27,33 +27,35 @@ system_types = [
 ]
 
 
-tank1_entity = base.ecs_world.create_entity(
+base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file='tank.bam'),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(-2, 10, 0)),
-    movement.Movement(value=Vec3(2, 0, 0)),
+    movement.Movement(value=Vec3(2, 2, 0)),
     paddles.Paddle(player=paddles.Players.LEFT),
 )
 
-tank2_entity = base.ecs_world.create_entity(
+base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file='tank.bam'),
     panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(-3, 10, 0)),
+    panda3d.Position(value=Vec3(-5, -20, 0)),
     movement.Movement(value=Vec3(0, 0, 0)),
     paddles.Paddle(player=paddles.Players.LEFT),
 )
 
+circle = base.ecs_world.create_entity(
+    panda3d.Model(),
+    panda3d.Geometry(file='circle.bam'),
+    panda3d.Scene(node=base.render),
+    panda3d.Position(value=Vec3(0, 0, 0)),
+)
+
+
+# the rest is to show a 10m circle
 base.ecs_world._flush_component_updates()
 
-tank_node1 = tank1_entity[Model].node
-tank_node1.set_r(-45)
-tank_node1.set_h(90)
-tank_node1.set_scale(.1)
+circle[Model].node.set_scale(10)
 
-tank_node2 = tank2_entity[Model].node
-tank_node2.set_r(-45)
-tank_node2.set_h(90)
-tank_node2.set_scale(.1)
-
+base.cam.set_pos(0, -20, 100); base.cam.look_at(0, 0.01, 0)
