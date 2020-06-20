@@ -9,7 +9,7 @@ from movement import Movement
 @Component()
 class Tank:
     # size: float = 0.2
-    weight: int = 2000
+    weight: int = 1
 
 
 class GiveTankMoveCommands(System):

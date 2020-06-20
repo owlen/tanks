@@ -7,6 +7,18 @@ from wecs.panda3d import Position
 from wecs.panda3d import Scene
 
 
+@Component
+class MovingMass:
+    dir: Vec3
+    # weight: int = 1
+    # speed: float = 0
+
+
+@Component()
+class Movement2:
+    dir: Vec3
+
+
 @Component()
 class Movement:
     value: Vec3
@@ -30,3 +42,4 @@ class MoveObject(System):
 
             position.value += movement.value * globalClock.dt
             model.node.set_pos(position.value)
+            model.node.set_h(model.node.get_h()+1)
