@@ -10,11 +10,6 @@ from wecs.panda3d import Model
 from wecs.panda3d import Scene
 
 
-class Players(Enum):
-    LEFT = 0
-    RIGHT = 1
-
-
 @Component()
 class Movement:
     value: Vec3

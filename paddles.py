@@ -8,7 +8,6 @@ from wecs.panda3d import Scene
 from wecs.panda3d import Position
 
 from movement import Movement
-from movement import Players
 
 
 @Component()

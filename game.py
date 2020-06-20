@@ -19,7 +19,7 @@ system_types = [
     panda3d.ManageGeometry,
     # Read player input and store it on Movement
     tank.GiveTankMoveCommands,
-    paddles.GivePaddlesMoveCommands,
+    # paddles.GivePaddlesMoveCommands,
     # Apply the Movement
     movement.MoveObject,
     # Did the paddle move too far? Back to the boundary with it!
@@ -29,25 +29,25 @@ system_types = [
 
 base.ecs_world.create_entity(
     panda3d.Model(),
-    panda3d.Geometry(file='tank.bam'),
+    panda3d.Geometry(file='resources/tank.bam'),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(-2, 10, 0)),
     movement.Movement(value=Vec3(2, 2, 0)),
-    paddles.Paddle(player=paddles.Players.LEFT),
+    tank.Tank(),
 )
 
 base.ecs_world.create_entity(
     panda3d.Model(),
-    panda3d.Geometry(file='tank.bam'),
+    panda3d.Geometry(file='resources/tank.bam'),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(-5, -20, 0)),
     movement.Movement(value=Vec3(0, 0, 0)),
-    paddles.Paddle(player=paddles.Players.LEFT),
+    tank.Tank(),
 )
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
-    panda3d.Geometry(file='circle.bam'),
+    panda3d.Geometry(file='resources/circle.bam'),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(0, 0, 0)),
 )
@@ -56,6 +56,6 @@ circle = base.ecs_world.create_entity(
 # the rest is to show a 10m circle
 base.ecs_world._flush_component_updates()
 
-circle[Model].node.set_scale(10)
+circle[Model].node.set_scale(30)
 
 base.cam.set_pos(0, -20, 100); base.cam.look_at(0, 0.01, 0)

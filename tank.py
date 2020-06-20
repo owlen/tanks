@@ -1,44 +1,35 @@
+from panda3d.core import KeyboardButton
 from wecs.core import Component
 from wecs.core import System
-from wecs.core import and_filter
-from wecs.panda3d import Model
-from wecs.panda3d import Scene
 from wecs.panda3d import Position
 
 from movement import Movement
-from movement import Players
 
 
 @Component()
 class Tank:
-    player: int
     # size: float = 0.2
     weight: int = 2000
 
 
 class GiveTankMoveCommands(System):
     entity_filters = {
-        'tank': and_filter([
-            Model,
-            Scene,
-            Position,
-            Movement,
-            Tank,
-        ]),
+        'tanks': Tank
+        #
+        # 'tank': and_filter([
+        #     Model,
+        #     Tank,
+        # ]),
     }
 
     def update(self, entities_by_filter):
-        for entity in entities_by_filter['tank']:
-            tank = entity[Tank]
+        for entity in entities_by_filter['tanks']:
+            print(entity)
             movement = entity[Movement]
 
             # What keys does the player use?
-            if tank.player == Players.LEFT:
-                up_key = KeyboardButton.ascii_key(b'w')
-                down_key = KeyboardButton.ascii_key(b's')
-            elif tank.player == Players.RIGHT:
-                up_key = KeyboardButton.up()
-                down_key = KeyboardButton.down()
+            up_key = KeyboardButton.ascii_key(b'w')
+            down_key = KeyboardButton.ascii_key(b's')
 
             # Read player input
             delta = 0
