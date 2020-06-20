@@ -1,13 +1,12 @@
 from panda3d.core import Vec3
 
 from wecs import panda3d
-from wecs.panda3d import Model
+from wecs.panda3d import Model, Position
 
 # These modules contain the actual game mechanics, which we are tying
 # together into an application in this file:
 
 import movement
-import paddles
 import tank
 
 
@@ -58,4 +57,4 @@ base.ecs_world._flush_component_updates()
 
 circle[Model].node.set_scale(30)
 
-base.cam.set_pos(0, -20, 100); base.cam.look_at(0, 0.01, 0)
+base.cam.set_pos(0, -70, 100); base.cam.look_at(circle[Position].value)

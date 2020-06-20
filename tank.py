@@ -1,7 +1,9 @@
+import pdb
+
 from panda3d.core import KeyboardButton
-from wecs.core import Component
+from wecs.core import Component, and_filter
 from wecs.core import System
-from wecs.panda3d import Position
+from wecs.panda3d import Position, Model
 
 from movement import Movement
 
@@ -15,16 +17,16 @@ class Tank:
 class GiveTankMoveCommands(System):
     entity_filters = {
         'tanks': Tank
-        #
-        # 'tank': and_filter([
-        #     Model,
+
+        # 'tanks': and_filter([
+        #     Movement,
         #     Tank,
         # ]),
     }
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
-            print(entity)
+            print(entity.get_components())
             movement = entity[Movement]
 
             # What keys does the player use?
@@ -35,11 +37,12 @@ class GiveTankMoveCommands(System):
             delta = 0
             if base.mouseWatcherNode.is_button_down(up_key):
                 delta += 1
+                print(f"move {entity[Tank]}")
             if base.mouseWatcherNode.is_button_down(down_key):
                 delta -= 1
 
             # Store movement
-            movement.value.z = delta
+            movement.value.y = delta
 
 
 class TankTouchesBoundary(System):
@@ -50,15 +53,16 @@ class TankTouchesBoundary(System):
 
     def update(self, entities_by_filter):
         for entity in set(entities_by_filter['tanks']):
+            # pdb.set_trace()
             position = entity[Position]
             print(position)
 
-            if position.value.z >= 3:
-                position.value.z = 3
-            elif position.value.z <= -3:
-                position.value.z = -3
+            if position.value.z >= 30:
+                position.value.z = 30
+            elif position.value.z <= -30:
+                position.value.z = -30
 
-            if position.value.x >= 3:
-                position.value.x = 3
-            elif position.value.x <= -3:
-                position.value.x = -3
+            if position.value.x >= 30:
+                position.value.x = 30
+            elif position.value.x <= -30:
+                position.value.x = -30
