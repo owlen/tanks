@@ -1,9 +1,7 @@
-import pdb
-
 from panda3d.core import KeyboardButton
 from wecs.core import Component, and_filter
 from wecs.core import System
-from wecs.panda3d import Position, Model
+from wecs.panda3d import Position
 
 from movement import Movement
 
@@ -24,6 +22,7 @@ class GiveTankMoveCommands(System):
         ]),
     }
 
+    # noinspection PyArgumentList
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
             movement = entity[Movement]

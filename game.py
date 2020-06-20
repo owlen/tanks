@@ -54,7 +54,7 @@ circle = base.ecs_world.create_entity(
 
 # the rest is to show a 10m circle
 base.ecs_world._flush_component_updates()
-
 circle[Model].node.set_scale(30)
 
-base.cam.set_pos(0, -70, 100); base.cam.look_at(circle[Position].value)
+base.cam.set_pos(0, -70, 100)
+base.cam.look_at(circle[Position].value)
