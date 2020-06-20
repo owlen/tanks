@@ -16,17 +16,16 @@ class Tank:
 
 class GiveTankMoveCommands(System):
     entity_filters = {
-        'tanks': Tank
+        # 'tanks': Tank
 
-        # 'tanks': and_filter([
-        #     Movement,
-        #     Tank,
-        # ]),
+        'tanks': and_filter([
+            Movement,
+            Tank,
+        ]),
     }
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
-            print(entity.get_components())
             movement = entity[Movement]
 
             # What keys does the player use?
@@ -57,10 +56,10 @@ class TankTouchesBoundary(System):
             position = entity[Position]
             print(position)
 
-            if position.value.z >= 30:
-                position.value.z = 30
-            elif position.value.z <= -30:
-                position.value.z = -30
+            if position.value.y >= 30:
+                position.value.y = 30
+            elif position.value.y <= -30:
+                position.value.y = -30
 
             if position.value.x >= 30:
                 position.value.x = 30
