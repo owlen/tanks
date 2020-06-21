@@ -1,6 +1,6 @@
-from panda3d.core import loadPrcFileData
-loadPrcFileData("", "want-directtools #t")
-loadPrcFileData("", "want-tk #t")
+# from panda3d.core import loadPrcFileData
+# loadPrcFileData("", "want-directtools #t")
+# loadPrcFileData("", "want-tk #t")
 
 from wecs import boilerplate
 
@@ -9,7 +9,8 @@ def run_game():
     boilerplate.run_game(
         console=False,
         keybindings=False,
-        debug_keys=True
+        debug_keys=True,
+        simplepbr=False,
     )
 
 

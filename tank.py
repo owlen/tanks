@@ -1,9 +1,11 @@
 from panda3d.core import KeyboardButton
 from wecs.core import Component, and_filter
 from wecs.core import System
-from wecs.panda3d import Position
+from wecs.panda3d import Position, Model
 
-from movement import Movement
+
+# from movement import Movement
+from movement import MovingMass
 
 
 @Component()
@@ -17,7 +19,7 @@ class GiveTankMoveCommands(System):
         # 'tanks': Tank
 
         'tanks': and_filter([
-            Movement,
+            MovingMass,
             Tank,
         ]),
     }
@@ -25,11 +27,12 @@ class GiveTankMoveCommands(System):
     # noinspection PyArgumentList
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
-            movement = entity[Movement]
+            # movement = entity[Movement]
 
             # What keys does the player use?
             up_key = KeyboardButton.ascii_key(b'w')
             down_key = KeyboardButton.ascii_key(b's')
+            throttle_key = KeyboardButton.ascii_key(b'+')
 
             # Read player input
             delta = 0
@@ -40,7 +43,11 @@ class GiveTankMoveCommands(System):
                 delta -= 1
 
             # Store movement
-            movement.value.y = delta
+            # movement.value.y = delta
+
+            if base.mouseWatcherNode.is_button_down(throttle_key):
+                entity[MovingMass].velocity += 0.1
+                print(f"gazz  velocity:{MovingMass.velocity}")
 
 
 class TankTouchesBoundary(System):

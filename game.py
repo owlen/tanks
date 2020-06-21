@@ -17,10 +17,8 @@ system_types = [
     # Read player input and store it on Movement
     tank.GiveTankMoveCommands,
     # paddles.GivePaddlesMoveCommands,
-    # Apply the Movement
-    movement.MoveObject,
     # Did the paddle move too far? Back to the boundary with it!
-    tank.TankTouchesBoundary,
+    # tank.TankTouchesBoundary,
     # New moving system
     movement.MoveMassSystem,
 ]
@@ -34,14 +32,14 @@ base.ecs_world.create_entity(
     movement.MovingMass(angle=45, mass=1000),
 )
 
-base.ecs_world.create_entity(
-    tank.Tank(),
-    panda3d.Model(),
-    panda3d.Geometry(file='resources/tank.bam'),
-    panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(-15, -20, 0)),
-    movement.Movement(value=Vec3(-3, -2, 0)),
-)
+# base.ecs_world.create_entity(
+#     tank.Tank(),
+#     panda3d.Model(),
+#     panda3d.Geometry(file='resources/tank.bam'),
+#     panda3d.Scene(node=base.render),
+#     panda3d.Position(value=Vec3(-15, -20, 0)),
+#     movement.MovingMass(angle=135, mass=1000, friction=0.2),
+# )
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
@@ -55,5 +53,5 @@ base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
 base.camera.set_pos(0, -70, 50)
-base.camLens.setFov(70)
+base.camLens.setFov(60)
 base.camera.look_at(0, 0, -20)
