@@ -53,7 +53,6 @@ class TankTouchesBoundary(System):
         for entity in set(entities_by_filter['tanks']):
             # pdb.set_trace()
             position = entity[Position]
-            print(position)
 
             if position.value.y >= 30:
                 position.value.y = 30

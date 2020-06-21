@@ -1,13 +1,11 @@
 from panda3d.core import Vec3
-
 from wecs import panda3d
 from wecs.panda3d import Model, Position
 
-# These modules contain the actual game mechanics, which we are tying
-# together into an application in this file:
-
 import movement
 import tank
+
+
 
 
 system_types = [
@@ -23,26 +21,26 @@ system_types = [
     movement.MoveObject,
     # Did the paddle move too far? Back to the boundary with it!
     tank.TankTouchesBoundary,
+    # New moving system
+    movement.MoveMassSystem,
 ]
 
-
 base.ecs_world.create_entity(
+    tank.Tank(),
     panda3d.Model(),
     panda3d.Geometry(file='resources/tank.bam'),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(-2, 10, 0)),
-    movement.Movement(value=Vec3(2, 2, 0)),
+    movement.MovingMass(angle=45, mass=1000),
 )
 
 base.ecs_world.create_entity(
+    tank.Tank(),
     panda3d.Model(),
     panda3d.Geometry(file='resources/tank.bam'),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(-15, -20, 0)),
     movement.Movement(value=Vec3(-3, -2, 0)),
-    # movement.Movement2(dir=Vec3(-3, -2, 0)),
-    # movement.MovingMass(dir=Vec3(1, 1, 1)),
-    tank.Tank(),
 )
 
 circle = base.ecs_world.create_entity(
@@ -52,10 +50,10 @@ circle = base.ecs_world.create_entity(
     panda3d.Position(value=Vec3(0, 0, 0)),
 )
 
-
 # the rest is to show a 10m circle
 base.ecs_world._flush_component_updates()
-circle[Model].node.set_scale(30)
+circle[Model].node.set_scale(50)
 
-base.cam.set_pos(0, -70, 70)
-base.cam.look_at(circle[Position].value)
+base.camera.set_pos(0, -70, 50)
+base.camLens.setFov(70)
+base.camera.look_at(0, 0, -20)
