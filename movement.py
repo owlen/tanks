@@ -36,7 +36,7 @@ class MoveMassSystem(System):
             mass.velocity = max(0, mass.velocity + mass.acceleration * dt - drag*dt)
             # Acceleration drops by friction*dt. Deceleration can't be higher than velocity
             mass.acceleration = max(mass.acceleration - mass.friction * dt, -1 * mass.velocity)
-            print(f"speed:{mass.velocity} acceleration:{mass.acceleration}")
+            # print(f"speed:{mass.velocity} acceleration:{mass.acceleration}")
 
             # just turn around if moving
             mass.angle += 30 * dt * (mass.velocity > 0)

@@ -1,12 +1,11 @@
+from random import randint
+
 from panda3d.core import Vec3
 from wecs import panda3d
-from wecs.panda3d import Model, Position
+from wecs.panda3d import Model
 
 import movement
 import tank
-
-
-
 
 system_types = [
     # Attach the entity's Model. This gives an entity a node as
@@ -23,23 +22,25 @@ system_types = [
     movement.MoveMassSystem,
 ]
 
-base.ecs_world.create_entity(
-    tank.Tank(),
-    panda3d.Model(),
-    panda3d.Geometry(file='resources/tank.bam'),
-    panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(20, 10, 0)),
-    movement.MovingMass(angle=45, mass=2000),
-)
 
-base.ecs_world.create_entity(
-    tank.Tank(),
-    panda3d.Model(),
-    panda3d.Geometry(file='resources/tank.bam'),
-    panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(10, -10, 0)),
-    movement.MovingMass(angle=45, mass=1000),
-)
+def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam"):
+    print(x, y, angle, mass, file)
+    base.ecs_world.create_entity(
+        tank.Tank(),
+        panda3d.Model(),
+        panda3d.Geometry(file),
+        panda3d.Scene(node=base.render),
+        panda3d.Position(value=Vec3(x, y, 0)),
+        movement.MovingMass(angle=angle, mass=mass),
+    )
+
+
+creat_tank(x=0, y=0, angle=90)
+
+# for i in range(-1, 2):
+#     for j in range(-1, 2):
+#         creat_tank(10 * i, 10 * j, angle=randint(0, 359), mass=3000)
+
 
 # base.ecs_world.create_entity(
 #     tank.Tank(),

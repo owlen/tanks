@@ -24,7 +24,11 @@ class GiveTankMoveCommands(System):
         ]),
     }
 
-    # noinspection PyArgumentList
+    def enter_filter_tanks(self, entity):
+        print('in enter_filter_tanks')
+        model = entity[Model]
+        model.node.set_hpr(0, 0, 0)
+
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
             # movement = entity[Movement]
