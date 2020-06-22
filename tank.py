@@ -51,11 +51,9 @@ class GiveTankMoveCommands(System):
             throttle_key = KeyboardButton.ascii_key(b'+')
             break_key = KeyboardButton.ascii_key(b'-')
             if base.mouseWatcherNode.is_button_down(throttle_key):
-                entity[MovingMass].acceleration += 100.0/entity[MovingMass].mass
-                # print(f"mass {entity[MovingMass].mass} acceleration {entity[MovingMass].acceleration}")
+                entity[MovingMass].forward_force += 100.0
             if base.mouseWatcherNode.is_button_down(break_key):
-                entity[MovingMass].acceleration -= 100.0/entity[MovingMass].mass
-                # print(f"mass {entity[MovingMass].mass} acceleration {entity[MovingMass].acceleration}")
+                entity[MovingMass].forward_force = max(0, entity[MovingMass].forward_force - 100.0)
 
 
 class TankTouchesBoundary(System):

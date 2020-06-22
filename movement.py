@@ -36,7 +36,6 @@ class MovingMass:
     angle: float = 0  # heading - degrees
     turn: int = 3  # max turn ability - Degrees/m
     velocity: int = 0  # velocity - m/sec
-    friction: float = 2  # m/sec**2
     acceleration: float = 0  # m/sec**2
     forward_force = 1000  # force ??
     friction = 100  # force
@@ -57,24 +56,23 @@ class MoveMassSystem(System):
             mass = entity[MovingMass]
             model = entity[Model]
 
-            # resultant_force is forward force minus air resistance
+            # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 1
-            air_resistance = mass.velocity * mass.velocity * aerodynamic_factor
+            air_resistance = mass.velocity ** 2 * aerodynamic_factor
+            # resultant force is sum of forces
             resultant_force = mass.forward_force - air_resistance - mass.friction
             # velocity grows by acceleration*dt, can't be negative
             mass.acceleration = resultant_force / mass.mass
             mass.velocity = mass.velocity + mass.acceleration * dt
-            # Acceleration drops by friction*dt. Deceleration can't be higher than velocity
-            # print(f"speed:{mass.velocity} acceleration:{mass.acceleration} force:{mass.forward_force} drag:{drag}")
             entity[Msg].msg = f"Weight:{mass.mass:>4} speed:{mass.velocity: >6.2f} accel:{mass.acceleration:.2f} " \
                               f"force:{mass.forward_force} " \
                               f"resultant_force:{resultant_force:.2f}"
 
             # turn based on speed
             mass.angle += mass.turn * mass.velocity * dt
+            model.node.set_h(mass.angle)
 
             model.node.set_pos(model.node, (0, mass.velocity * dt, 0))
-            model.node.set_h(mass.angle)
 
 # Yes, nodepath.set_pos(nodepath, (0, 1, 0)) will move it forward by
 # 1 unit relative to its own coordinate system, which will include its rotation
