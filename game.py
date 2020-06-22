@@ -28,7 +28,16 @@ base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file='resources/tank.bam'),
     panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(-2, 10, 0)),
+    panda3d.Position(value=Vec3(20, 10, 0)),
+    movement.MovingMass(angle=45, mass=2000),
+)
+
+base.ecs_world.create_entity(
+    tank.Tank(),
+    panda3d.Model(),
+    panda3d.Geometry(file='resources/tank.bam'),
+    panda3d.Scene(node=base.render),
+    panda3d.Position(value=Vec3(10, -10, 0)),
     movement.MovingMass(angle=45, mass=1000),
 )
 
@@ -52,6 +61,6 @@ circle = base.ecs_world.create_entity(
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
-base.camera.set_pos(0, -70, 50)
+base.camera.set_pos(0, -90, 50)
 base.camLens.setFov(60)
 base.camera.look_at(0, 0, -20)

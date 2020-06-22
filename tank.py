@@ -32,7 +32,6 @@ class GiveTankMoveCommands(System):
             # What keys does the player use?
             up_key = KeyboardButton.ascii_key(b'w')
             down_key = KeyboardButton.ascii_key(b's')
-            throttle_key = KeyboardButton.ascii_key(b'+')
 
             # Read player input
             delta = 0
@@ -45,9 +44,14 @@ class GiveTankMoveCommands(System):
             # Store movement
             # movement.value.y = delta
 
+            throttle_key = KeyboardButton.ascii_key(b'+')
+            break_key = KeyboardButton.ascii_key(b'-')
             if base.mouseWatcherNode.is_button_down(throttle_key):
-                entity[MovingMass].velocity += 0.1
-                print(f"gazz  velocity:{MovingMass.velocity}")
+                entity[MovingMass].acceleration += 100.0/entity[MovingMass].mass
+                # print(f"mass {entity[MovingMass].mass} acceleration {entity[MovingMass].acceleration}")
+            if base.mouseWatcherNode.is_button_down(break_key):
+                entity[MovingMass].acceleration -= 100.0/entity[MovingMass].mass
+                # print(f"mass {entity[MovingMass].mass} acceleration {entity[MovingMass].acceleration}")
 
 
 class TankTouchesBoundary(System):
