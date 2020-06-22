@@ -20,10 +20,11 @@ system_types = [
     # tank.TankTouchesBoundary,
     # New moving system
     movement.MoveMassSystem,
+    movement.PrintMsg,
 ]
 
 
-def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam"):
+def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
     print(x, y, angle, mass, file)
     base.ecs_world.create_entity(
         tank.Tank(),
@@ -32,14 +33,16 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam"):
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(angle=angle, mass=mass),
+        movement.Msg(rate=print_rate),
     )
 
 
-creat_tank(x=0, y=0, angle=0, mass=2000)
-creat_tank(x=0, y=-20, angle=0, mass=500)
+creat_tank(x=0, y=0, angle=0, mass=1000, print_rate=30)
+creat_tank(x=0, y=-20, angle=0, mass=500, print_rate=30)
+creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=30)
 
-# for j in range(1, 4):
-#     creat_tank(10 * j, 0, angle=90, mass=1000*j)
+for j in range(1, 4):
+    creat_tank(10 * j, 40, angle=90, mass=1000*j)
 
 
 # for i in range(-1, 2):
@@ -67,6 +70,6 @@ circle = base.ecs_world.create_entity(
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
-base.camera.set_pos(0, -90, 50)
-base.camLens.setFov(60)
+base.camera.set_pos(0, -80, 40)
+base.camLens.setFov(70)
 base.camera.look_at(0, 0, -20)

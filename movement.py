@@ -5,16 +5,41 @@ from wecs.core import and_filter
 from wecs.panda3d import Model
 from wecs.panda3d import Position
 
+@Component()
+class Msg:
+    msg: str = "."  # mass - Kg
+    rate: int = 30  # print every
+    rate_c: int = 0
+
+
+class PrintMsg(System):
+    entity_filters = {
+        'print': and_filter([
+            Position,
+            Msg,
+        ]),
+    }
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['print']:
+            if entity[Msg].rate < 1:
+                continue
+            entity[Msg].rate_c += 1
+            if entity[Msg].rate_c % entity[Msg].rate == 0:
+                print(f"msg:{entity}, {entity[Msg].msg}")
+
+
 
 @Component()
 class MovingMass:
     mass: int  # mass - Kg
     angle: float = 0  # heading - degrees
-    max_turn: int = 30  # max turn ability - Degrees/m
+    turn: int = 3  # max turn ability - Degrees/m
     velocity: int = 0  # velocity - m/sec
     friction: float = 2  # m/sec**2
     acceleration: float = 0  # m/sec**2
-    forward_force = 1000  # ??
+    forward_force = 1000  # force ??
+    friction = 100  # force
 
 
 class MoveMassSystem(System):
@@ -22,6 +47,7 @@ class MoveMassSystem(System):
         'move': and_filter([
             Position,
             MovingMass,
+            Msg,
         ]),
     }
 
@@ -31,14 +57,21 @@ class MoveMassSystem(System):
             mass = entity[MovingMass]
             model = entity[Model]
 
+            # resultant_force is forward force minus air resistance
+            aerodynamic_factor = 1
+            air_resistance = mass.velocity * mass.velocity * aerodynamic_factor
+            resultant_force = mass.forward_force - air_resistance - mass.friction
             # velocity grows by acceleration*dt, can't be negative
-            mass.acceleration = mass.forward_force / mass.mass
-            mass.velocity = max(0, mass.velocity + mass.acceleration * dt)
+            mass.acceleration = resultant_force / mass.mass
+            mass.velocity = mass.velocity + mass.acceleration * dt
             # Acceleration drops by friction*dt. Deceleration can't be higher than velocity
-            print(f"speed:{mass.velocity} acceleration:{mass.acceleration}")
+            # print(f"speed:{mass.velocity} acceleration:{mass.acceleration} force:{mass.forward_force} drag:{drag}")
+            entity[Msg].msg = f"Weight:{mass.mass:>4} speed:{mass.velocity: >6.2f} accel:{mass.acceleration:.2f} " \
+                              f"force:{mass.forward_force} " \
+                              f"resultant_force:{resultant_force:.2f}"
 
-            # just turn around if moving
-            mass.angle += 30 * dt * (mass.velocity > 0)
+            # turn based on speed
+            mass.angle += mass.turn * mass.velocity * dt
 
             model.node.set_pos(model.node, (0, mass.velocity * dt, 0))
             model.node.set_h(mass.angle)
