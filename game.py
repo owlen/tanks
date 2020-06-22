@@ -35,7 +35,12 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam"):
     )
 
 
-creat_tank(x=0, y=0, angle=90)
+creat_tank(x=0, y=0, angle=0, mass=2000)
+creat_tank(x=0, y=-20, angle=0, mass=500)
+
+# for j in range(1, 4):
+#     creat_tank(10 * j, 0, angle=90, mass=1000*j)
+
 
 # for i in range(-1, 2):
 #     for j in range(-1, 2):
