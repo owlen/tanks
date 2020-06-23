@@ -2,6 +2,7 @@ from panda3d.core import Vec3
 from wecs import panda3d
 from wecs.panda3d import Model
 
+import DustSytem
 import movement
 import tank
 
@@ -18,7 +19,7 @@ system_types = [
     # tank.TankTouchesBoundary,
     # New moving system
     movement.MoveMassSystem,
-    tank.DustSystem,
+    DustSytem.DustSystem,
     movement.PrintMsg,
 ]
 
@@ -32,7 +33,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(angle=angle, mass=mass),
-        tank.Duster(),
+        DustSytem.Duster(),
         movement.Msg(rate=print_rate),
     )
 
@@ -40,7 +41,6 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
 creat_tank(x=20, y=-20, angle=0, mass=5000, print_rate=120)
 creat_tank(x=0, y=0, angle=0, mass=1000, print_rate=120)
 creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=120)
-
 
 # for j in range(1, 4):
 #     creat_tank(10 * j, 40, angle=90, mass=1000*j)

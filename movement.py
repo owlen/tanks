@@ -5,6 +5,7 @@ from wecs.core import and_filter
 from wecs.panda3d import Model
 from wecs.panda3d import Position
 
+
 @Component()
 class Msg:
     msg: str = "."  # mass - Kg
@@ -27,7 +28,6 @@ class PrintMsg(System):
             entity[Msg].rate_c += 1
             if entity[Msg].rate_c % entity[Msg].rate == 0:
                 print(f"msg:{entity}, {entity[Msg].msg}")
-
 
 
 @Component()
@@ -63,7 +63,7 @@ class MoveMassSystem(System):
             resultant_force = mass.forward_force - air_resistance - mass.friction
             # velocity grows by acceleration*dt, can't be negative
             mass.acceleration = resultant_force / mass.mass
-            mass.velocity = mass.velocity + mass.acceleration * dt
+            mass.velocity = max(0, mass.velocity + mass.acceleration * dt)
             entity[Msg].msg = f"Weight:{mass.mass:>4} speed:{mass.velocity: >6.2f} accel:{mass.acceleration:.2f} " \
                               f"force:{mass.forward_force} " \
                               f"resultant_force:{resultant_force:.2f}"

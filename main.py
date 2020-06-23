@@ -1,4 +1,5 @@
 from panda3d.core import loadPrcFileData
+
 # loadPrcFileData("", "want-directtools #t")
 # loadPrcFileData("", "want-tk #t")
 loadPrcFileData("", "win-origin 1000 400")
@@ -21,7 +22,6 @@ def run_game():
 if __name__ == '__main__':
     run_game()
 
-
 # dont forget
 # primitives = loader.load_model("primitives.bam")
 # cube = primitives.find("cube")
@@ -38,4 +38,3 @@ if __name__ == '__main__':
 # segs.move_to(0, 0, 0)
 # segs.draw_to(0, 0, 1)
 # base.render.attach_new_node(segs.create())
-

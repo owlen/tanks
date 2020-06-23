@@ -1,12 +1,11 @@
 from panda3d.core import KeyboardButton
 from panda3d.core import Vec3
-
 from wecs.core import Component
 from wecs.core import System
 from wecs.core import and_filter
 from wecs.panda3d import Model
-from wecs.panda3d import Scene
 from wecs.panda3d import Position
+from wecs.panda3d import Scene
 
 from movement import Movement
 
