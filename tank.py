@@ -2,10 +2,17 @@ from panda3d.core import KeyboardButton
 from wecs.core import Component, and_filter
 from wecs.core import System
 from wecs.panda3d import Position, Model
-
+from direct.particles.ParticleEffect import ParticleEffect
 
 # from movement import Movement
 from movement import MovingMass
+
+
+@Component()
+class Smoker:
+    pass
+
+
 
 
 @Component()
@@ -24,10 +31,17 @@ class GiveTankMoveCommands(System):
         ]),
     }
 
-    # def enter_filter_tanks(self, entity):
-    #     print('in enter_filter_tanks')
-    #     model = entity[Model]
-    #     model.node.set_hpr(0, 0, 0)
+    def enter_filter_tanks(self, entity):
+        print('in enter_filter_tanks')
+        model = entity[Model]
+        model.node.set_hpr(0, 0, 0)
+
+        p = ParticleEffect()
+        p.loadConfig('dust.ptf')
+        p.start(parent=model.node, renderParent=render)
+        p.set_y(-3)
+        p.setScale(2)
+        p.birthRate(0.05)
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:

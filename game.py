@@ -1,5 +1,3 @@
-from random import randint
-
 from panda3d.core import Vec3
 from wecs import panda3d
 from wecs.panda3d import Model
@@ -37,12 +35,12 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
     )
 
 
-creat_tank(x=0, y=0, angle=0, mass=1000, print_rate=30)
+creat_tank(x=0, y=0, angle=90, mass=1000, print_rate=-1)
 creat_tank(x=0, y=-20, angle=0, mass=500, print_rate=30)
 creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=30)
 
-for j in range(1, 4):
-    creat_tank(10 * j, 40, angle=90, mass=1000*j)
+# for j in range(1, 4):
+#     creat_tank(10 * j, 40, angle=90, mass=1000*j)
 
 
 # for i in range(-1, 2):
@@ -70,6 +68,8 @@ circle = base.ecs_world.create_entity(
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
-base.camera.set_pos(0, -80, 40)
+base.camera.set_pos(0, -50, 30)
 base.camLens.setFov(70)
 base.camera.look_at(0, 0, -20)
+
+base.enableParticles()
