@@ -35,7 +35,7 @@ class MovingMass:
     mass: int  # mass - Kg
     angle: float = 0  # heading - degrees
     turn: int = 3  # max turn ability - Degrees/m
-    velocity: int = 0  # velocity - m/sec
+    velocity: int = 1  # velocity - m/sec
     acceleration: float = 0  # m/sec**2
     forward_force = 1000  # force ??
     friction = 100  # force
@@ -57,7 +57,7 @@ class MoveMassSystem(System):
             model = entity[Model]
 
             # air_resistance grow at speed^2 times aerodynamic_factor
-            aerodynamic_factor = 1
+            aerodynamic_factor = 2
             air_resistance = mass.velocity ** 2 * aerodynamic_factor
             # resultant force is sum of forces
             resultant_force = mass.forward_force - air_resistance - mass.friction

@@ -2,7 +2,7 @@ from panda3d.core import KeyboardButton
 from wecs.core import Component, and_filter
 from wecs.core import System
 from wecs.panda3d import Position, Model
-from direct.particles.ParticleEffect import ParticleEffect
+from direct.particles.ParticleEffect import ParticleEffect, LinearVectorForce, LVector3
 
 # from movement import Movement
 from movement import MovingMass
@@ -37,11 +37,19 @@ class GiveTankMoveCommands(System):
         model.node.set_hpr(0, 0, 0)
 
         p = ParticleEffect()
-        p.loadConfig('dust.ptf')
+        p.loadConfig('resources/dust.ptf')
         p.start(parent=model.node, renderParent=render)
         p.set_y(-3)
-        p.setScale(2)
-        p.birthRate(0.05)
+        p.getParticlesList()[0].emitter.setOffsetForce(LVector3(0.0000, 0.0000, 2.0000))
+        print(p.getForceGroupDict())
+        print(p.getForceGroupList()[0])
+        print(p.getForceGroupNamed('gravity'))
+        p.disable()
+        p.softStart(1)
+        p.removeAllForces()
+        p.start(parent=model.node, renderParent=render)
+        p.enable()
+
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
@@ -65,7 +73,7 @@ class GiveTankMoveCommands(System):
             throttle_key = KeyboardButton.ascii_key(b'+')
             break_key = KeyboardButton.ascii_key(b'-')
             if base.mouseWatcherNode.is_button_down(throttle_key):
-                entity[MovingMass].forward_force += 100.0
+                entity[MovingMass].forward_force = min(4000, entity[MovingMass].forward_force + 100.0)
             if base.mouseWatcherNode.is_button_down(break_key):
                 entity[MovingMass].forward_force = max(0, entity[MovingMass].forward_force - 100.0)
 

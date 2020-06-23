@@ -35,9 +35,10 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
     )
 
 
-creat_tank(x=0, y=0, angle=90, mass=1000, print_rate=-1)
-creat_tank(x=0, y=-20, angle=0, mass=500, print_rate=30)
-creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=30)
+creat_tank(x=20, y=-20, angle=0, mass=5000, print_rate=120)
+# creat_tank(x=0, y=0, angle=0, mass=1000, print_rate=120)
+# creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=120)
+
 
 # for j in range(1, 4):
 #     creat_tank(10 * j, 40, angle=90, mass=1000*j)
@@ -48,15 +49,6 @@ creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=30)
 #         creat_tank(10 * i, 10 * j, angle=randint(0, 359), mass=3000)
 
 
-# base.ecs_world.create_entity(
-#     tank.Tank(),
-#     panda3d.Model(),
-#     panda3d.Geometry(file='resources/tank.bam'),
-#     panda3d.Scene(node=base.render),
-#     panda3d.Position(value=Vec3(-15, -20, 0)),
-#     movement.MovingMass(angle=135, mass=1000, friction=0.2),
-# )
-
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file='resources/circle.bam'),
@@ -64,12 +56,12 @@ circle = base.ecs_world.create_entity(
     panda3d.Position(value=Vec3(0, 0, 0)),
 )
 
-# the rest is to show a 10m circle
+# the rest is to show a 50m circle
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
-base.camera.set_pos(0, -50, 30)
-base.camLens.setFov(70)
-base.camera.look_at(0, 0, -20)
+base.camera.set_pos(0, -50, 20)
+base.camLens.setFov(60)
+base.camera.look_at(0, 0, -10)
 
 base.enableParticles()
