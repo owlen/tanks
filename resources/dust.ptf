@@ -3,7 +3,7 @@ self.reset()
 self.setPos(0.000, 0.000, 0.000)
 self.setHpr(0.000, 0.000, 0.000)
 self.setScale(4, 1, 1)
-p0 = Particles.Particles('particles-1')
+p0 = Particles.Particles('dust')
 # Particles parameters
 p0.setFactory("PointParticleFactory")
 p0.setRenderer("SpriteParticleRenderer")
