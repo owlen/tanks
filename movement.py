@@ -2,7 +2,7 @@ from direct.showbase.ShowBaseGlobal import globalClock
 from wecs.core import Component
 from wecs.core import System
 from wecs.core import and_filter
-from wecs.panda3d import Model
+from wecs.panda3d import Model, sqrt
 from wecs.panda3d import Position
 
 
@@ -33,11 +33,12 @@ class PrintMsg(System):
 @Component()
 class MovingMass:
     mass: int  # mass - Kg
-    angle: float = 0  # heading - degrees
+    heading: float = 0  # heading - degrees
     turn: int = 3  # max turn ability - Degrees/m
     velocity: int = 1  # velocity - m/sec
     acceleration: float = 0  # m/sec**2
     forward_force = 1000  # force ??
+    break_force = 0
     friction = 100  # force
 
 
@@ -53,26 +54,33 @@ class MoveMassSystem(System):
     def update(self, entities_by_filter):
         dt = globalClock.dt
         for entity in entities_by_filter['move']:
-            mass = entity[MovingMass]
+            moving_mass = entity[MovingMass]
             model = entity[Model]
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2
-            air_resistance = mass.velocity ** 2 * aerodynamic_factor
+            air_resistance = moving_mass.velocity ** 2 * aerodynamic_factor
             # resultant force is sum of forces
-            resultant_force = mass.forward_force - air_resistance - mass.friction
+            resultant_force = moving_mass.forward_force - air_resistance - moving_mass.friction - moving_mass.break_force
             # velocity grows by acceleration*dt, can't be negative
-            mass.acceleration = resultant_force / mass.mass
-            mass.velocity = max(0, mass.velocity + mass.acceleration * dt)
-            entity[Msg].msg = f"Weight:{mass.mass:>4} speed:{mass.velocity: >6.2f} accel:{mass.acceleration:.2f} " \
-                              f"force:{mass.forward_force} " \
-                              f"resultant_force:{resultant_force:.2f}"
+            moving_mass.acceleration = resultant_force / moving_mass.mass
+            moving_mass.velocity = max(0, moving_mass.velocity + moving_mass.acceleration * dt)
+            entity[
+                Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} accel:{moving_mass.acceleration:.2f} " \
+                           f"force:{moving_mass.forward_force} " \
+                           f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
 
             # turn based on speed
-            mass.angle += mass.turn * mass.velocity * dt
-            model.node.set_h(mass.angle)
+            moving_mass.heading += moving_mass.turn * moving_mass.velocity * dt
+            model.node.set_h(moving_mass.heading)
 
-            model.node.set_pos(model.node, (0, mass.velocity * dt, 0))
+            model.node.set_pos(model.node, (0, moving_mass.velocity * dt, 0))
+
+            x = entity[Model].node.getX()
+            y = entity[Model].node.getY()
+            entity[Msg].msg += f" dis: {sqrt(x * x + y * y)}"
+
+            entity[Position].value = entity[Model].node.getPos()
 
 # Yes, nodepath.set_pos(nodepath, (0, 1, 0)) will move it forward by
 # 1 unit relative to its own coordinate system, which will include its rotation

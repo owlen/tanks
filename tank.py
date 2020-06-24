@@ -1,7 +1,7 @@
 from panda3d.core import KeyboardButton
 from wecs.core import Component, and_filter
 from wecs.core import System
-from wecs.panda3d import Position, Model
+from wecs.panda3d import Model
 
 from movement import MovingMass
 
@@ -45,31 +45,30 @@ class GiveTankMoveCommands(System):
             # Store movement
             # movement.value.y = delta
 
-            throttle_key = KeyboardButton.ascii_key(b'+')
-            break_key = KeyboardButton.ascii_key(b'-')
-            if base.mouseWatcherNode.is_button_down(throttle_key):
+            throttle_up_key = KeyboardButton.ascii_key(b'+')
+            throttle_down_key = KeyboardButton.ascii_key(b'-')
+            break_key = KeyboardButton.ascii_key(b'b')
+            if base.mouseWatcherNode.is_button_down(throttle_up_key):
                 entity[MovingMass].forward_force = min(4000, entity[MovingMass].forward_force + 100.0)
-            if base.mouseWatcherNode.is_button_down(break_key):
+            if base.mouseWatcherNode.is_button_down(throttle_down_key):
                 entity[MovingMass].forward_force = max(0, entity[MovingMass].forward_force - 100.0)
+            if base.mouseWatcherNode.is_button_down(break_key):
+                entity[MovingMass].break_force = 10000
+            else:
+                entity[MovingMass].break_force = 0
 
 
 class TankTouchesBoundary(System):
     entity_filters = {
-        # 'tanks': and_filter([Position, Tank])
-        'tanks': Tank
+        'tanks': and_filter([MovingMass, Tank])
     }
+
+    arena_radius = 50
 
     def update(self, entities_by_filter):
         for entity in set(entities_by_filter['tanks']):
-            # pdb.set_trace()
-            position = entity[Position]
 
-            if position.value.y >= 30:
-                position.value.y = 30
-            elif position.value.y <= -30:
-                position.value.y = -30
+            distance = entity[Model].node.getPos().length()
 
-            if position.value.x >= 30:
-                position.value.x = 30
-            elif position.value.x <= -30:
-                position.value.x = -30
+            if distance > self.arena_radius:
+                print(f"  out  {entity} distance: {distance}")

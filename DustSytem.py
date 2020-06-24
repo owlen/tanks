@@ -30,6 +30,7 @@ class DustSystem(System):
                 if moving.velocity < 2:
                     duster.particleMgr.disable()
                 else:
+                    # TODO should be acceleration * mass
                     r = duster.dustFactor / moving.velocity
                     duster.particleMgr.getParticlesList()[0].setBirthRate(r)
             elif moving.velocity > 3:
