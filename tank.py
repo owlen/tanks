@@ -23,7 +23,6 @@ class GiveTankMoveCommands(System):
     }
 
     def enter_filter_tanks(self, entity):
-        print('in enter_filter_tanks')
         model = entity[Model]
         model.node.set_hpr(0, 0, 0)
 

@@ -14,16 +14,15 @@ system_types = [
     panda3d.ManageGeometry,
     # Read player input and store it on Movement
     tank.GiveTankMoveCommands,
-    tank.TankTouchesBoundary,
     # New moving system
     movement.MoveMassSystem,
     DustSytem.DustSystem,
+    # tank.TankTouchesBoundary,
     movement.PrintMsg,
 ]
 
 
 def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
-    print(x, y, angle, mass, file)
     base.ecs_world.create_entity(
         tank.Tank(),
         panda3d.Model(),

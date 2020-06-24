@@ -38,7 +38,6 @@ class DustSystem(System):
                 duster.particleMgr.start(parent=entity[Model].node, renderParent=render)
 
     def enter_filter_dusters(self, entity):
-        print('in enter_filter_dusters')
         model = entity[Model]
         model.node.set_hpr(0, 0, 0)
 
