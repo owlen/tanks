@@ -1,4 +1,5 @@
-from panda3d.core import KeyboardButton
+from direct.showbase.ShowBaseGlobal import globalClock
+from panda3d.core import KeyboardButton, LineSegs, VBase4
 from wecs.core import Component, and_filter
 from wecs.core import System
 from wecs.panda3d import Model

@@ -19,6 +19,7 @@ system_types = [
     DustSytem.DustSystem,
     # tank.TankTouchesBoundary,
     movement.PrintMsg,
+    tank.LaserSystem
 ]
 
 
@@ -31,22 +32,28 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         panda3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(heading=angle, mass=mass),
         DustSytem.Duster(),
+        tank.LaserGun(),
+        movement.Msg(rate=print_rate),
+    )
+
+
+def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
+    base.ecs_world.create_entity(
+        tank.Tank(),
+        panda3d.Model(),
+        panda3d.Geometry(file),
+        panda3d.Scene(node=base.render),
+        panda3d.Position(value=Vec3(x, y, 0)),
+        # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
         movement.Msg(rate=print_rate),
     )
 
 
 creat_tank(x=0, y=30, angle=0, mass=500, print_rate=120)
 creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=120)
-creat_tank(x=20, y=-20, angle=0, mass=5000, print_rate=120)
 
-# for j in range(1, 5):
-#     creat_tank(10 * j, 40, heading=90, mass=100*j)
-
-
-# for i in range(-1, 2):
-#     for j in range(-1, 2):
-#         creat_tank(10 * i, 10 * j, heading=randint(0, 359), mass=3000)
-
+for j in range(1, 5):
+    creat_tank_target(20 * j - 30, -10, mass=100 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
