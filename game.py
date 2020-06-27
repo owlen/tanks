@@ -3,6 +3,7 @@ from wecs import panda3d
 from wecs.panda3d import Model
 
 import DustSytem
+import misc
 import movement
 import tank
 
@@ -19,21 +20,24 @@ system_types = [
     DustSytem.DustSystem,
     # tank.TankTouchesBoundary,
     movement.PrintMsg,
-    tank.LaserSystem
+    misc.LaserSystem,
+    misc.LifeSystem,
+
 ]
 
 
-def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
+def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0, turn=3):
     base.ecs_world.create_entity(
         tank.Tank(),
         panda3d.Model(),
         panda3d.Geometry(file),
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
-        movement.MovingMass(heading=angle, mass=mass),
+        movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
         tank.LaserGun(),
         movement.Msg(rate=print_rate),
+        misc.Living
     )
 
 
@@ -47,14 +51,15 @@ def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", 
         # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
         tank.LaserGun(),
         movement.Msg(rate=print_rate),
+        misc.Living
     )
 
 
 creat_tank(x=0, y=-30, angle=0, mass=500, print_rate=120)
-creat_tank(x=30, y=-20, angle=0, mass=2000, print_rate=120)
+creat_tank(x=-30, y=0, angle=0, mass=2000, print_rate=120, turn=-3)
 
-for j in range(1, 5):
-    creat_tank_target(20 * j - 60, -10, mass=100 * j)
+# for j in range(1, 5):
+#     creat_tank_target(20 * j - 60, -30 + 10*j, mass=100 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
@@ -69,8 +74,8 @@ circle[Model].node.set_scale(50)
 
 base.camera.set_pos(0, -50, 20)
 base.camLens.setFov(60)
-base.camera.set_pos(0, -70, 40)
-base.camLens.setFov(60)
+base.camera.set_pos(0, -80, 40)
+base.camLens.setFov(70)
 base.camera.look_at(0, 0, -10)
 
 base.enableParticles()

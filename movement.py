@@ -34,7 +34,8 @@ class PrintMsg(System):
 class MovingMass:
     mass: int  # mass - Kg
     heading: float = 0  # heading - degrees
-    turn: int = 3  # max turn ability - Degrees/m
+    min_turn_radius: int = 10  # how tight it can turn?
+    turn: int = 180 / (min_turn_radius * 3.1413)  # 3  # max turn ability - Degrees/m
     velocity: int = 1  # velocity - m/sec
     acceleration: float = 0  # m/sec**2
     forward_force = 1000  # force ??
