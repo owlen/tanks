@@ -1,5 +1,6 @@
 from direct.showbase.ShowBaseGlobal import globalClock
-from panda3d.core import KeyboardButton, LineSegs, VBase4
+from panda3d.core import KeyboardButton, LineSegs, VBase4, CollisionSegment, CollisionNode, CollisionHandlerQueue, \
+    CollisionTraverser
 from wecs.core import Component, and_filter
 from wecs.core import System
 from wecs.panda3d import Model
@@ -25,6 +26,10 @@ class LaserSystem(System):
     }
     duration = 0.3
 
+    handler = CollisionHandlerQueue()
+    base.cTrav = CollisionTraverser()
+    base.cTrav.show_collisions(base.render)
+
     def enter_filter_guns(self, entity):
         model = entity[Model]
         model.node.set_hpr(0, 0, 0)
@@ -33,9 +38,21 @@ class LaserSystem(System):
         segs.set_thickness(2.0)
         segs.set_color(VBase4(.6, 1, .1, 1))
         segs.move_to(0, 2, 2)
-        segs.draw_to(0, 40, 0)
+        segs.draw_to(0, 40, 1)
         entity[LaserGun].laser_node_path = model.node.attach_new_node(segs.create())
         entity[LaserGun].laser_node_path.hide()
+
+        # Make a ray with length as "from" collider
+        ray = CollisionSegment((0, 0, 1), (0, 50, 0))
+        ray_node = CollisionNode("RAY")
+        ray_node.add_solid(ray)
+        ray_node.set_from_collide_mask(1)
+        # ray_np_parent = render.attach_new_node("from-parent")
+        # ray_np = ray_np_parent.attach_new_node(ray_node)
+        ray_np = model.node.attach_new_node(ray_node)
+        ray_np.show()
+
+        base.cTrav.add_collider(ray_np, self.handler)
 
     def update(self, entities_by_filter):
         for gun in entities_by_filter['guns']:
