@@ -1,6 +1,6 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import KeyboardButton, LineSegs, VBase4, CollisionSegment, CollisionNode, CollisionHandlerQueue, \
-    CollisionTraverser
+    CollisionTraverser, CollisionSphere
 from wecs.core import Component, and_filter
 from wecs.core import System
 from wecs.panda3d import Model
@@ -43,16 +43,20 @@ class LaserSystem(System):
         entity[LaserGun].laser_node_path.hide()
 
         # Make a ray with length as "from" collider
-        ray = CollisionSegment((0, 0, 1), (0, 50, 0))
+        ray = CollisionSegment((0, 5, 1), (0, 70, 0))
         ray_node = CollisionNode("RAY")
         ray_node.add_solid(ray)
         ray_node.set_from_collide_mask(1)
-        # ray_np_parent = render.attach_new_node("from-parent")
-        # ray_np = ray_np_parent.attach_new_node(ray_node)
         ray_np = model.node.attach_new_node(ray_node)
         ray_np.show()
-
         base.cTrav.add_collider(ray_np, self.handler)
+
+        sphere = CollisionSphere((0, 0, 1), 3)
+        sphere_node = CollisionNode("TANK-SPHERE")
+        sphere_node.add_solid(sphere)
+        sphere_node.set_into_collide_mask(1)
+        into_np = model.node.attach_new_node(sphere_node)
+        # into_np.show()
 
     def update(self, entities_by_filter):
         for gun in entities_by_filter['guns']:

@@ -1,4 +1,4 @@
-from panda3d.core import Vec3, CollisionSphere, CollisionNode
+from panda3d.core import Vec3
 from wecs import panda3d
 from wecs.panda3d import Model
 
@@ -45,15 +45,16 @@ def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", 
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
         # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
+        tank.LaserGun(),
         movement.Msg(rate=print_rate),
     )
 
 
-creat_tank(x=0, y=30, angle=0, mass=500, print_rate=120)
+creat_tank(x=0, y=-30, angle=0, mass=500, print_rate=120)
 creat_tank(x=30, y=-20, angle=0, mass=2000, print_rate=120)
 
-# for j in range(1, 5):
-#     creat_tank_target(20 * j - 30, -10, mass=100 * j)
+for j in range(1, 5):
+    creat_tank_target(20 * j - 60, -10, mass=100 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
@@ -73,11 +74,3 @@ base.camLens.setFov(60)
 base.camera.look_at(0, 0, -10)
 
 base.enableParticles()
-
-# Make a CollisionSphere as "into" collider
-sphere = CollisionSphere((0, 10, 0), 2)
-into_node = CollisionNode("TARGET-SPHERE")
-into_node.add_solid(sphere)
-into_node.set_into_collide_mask(1)
-into_np = render.attach_new_node(into_node)
-into_np.show()
