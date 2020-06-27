@@ -61,14 +61,14 @@ class MoveMassSystem(System):
             aerodynamic_factor = 2
             air_resistance = moving_mass.velocity ** 2 * aerodynamic_factor
             # resultant force is sum of forces
-            resultant_force = moving_mass.forward_force - air_resistance - moving_mass.friction - moving_mass.break_force
+            resultant_force = moving_mass.forward_force - air_resistance - \
+                              moving_mass.friction - moving_mass.break_force
             # velocity grows by acceleration*dt, can't be negative
             moving_mass.acceleration = resultant_force / moving_mass.mass
             moving_mass.velocity = max(0, moving_mass.velocity + moving_mass.acceleration * dt)
-            entity[
-                Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} accel:{moving_mass.acceleration:.2f} " \
-                           f"force:{moving_mass.forward_force} " \
-                           f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
+            entity[Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} " \
+                              f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
+                              f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
 
             # turn based on speed
             moving_mass.heading += moving_mass.turn * moving_mass.velocity * dt
