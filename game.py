@@ -35,7 +35,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         panda3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
-        tank.LaserGun(),
+        misc.LaserGun(),
         movement.Msg(rate=print_rate),
         misc.Living
     )
@@ -49,14 +49,14 @@ def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", 
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
         # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
-        tank.LaserGun(),
+        misc.LaserGun(),
         movement.Msg(rate=print_rate),
         misc.Living
     )
 
 
 creat_tank(x=0, y=-30, angle=0, mass=500, print_rate=120)
-creat_tank(x=-30, y=0, angle=0, mass=2000, print_rate=120, turn=-3)
+creat_tank(x=-10, y=0, angle=0, mass=2000, print_rate=120, turn=-3)
 
 # for j in range(1, 5):
 #     creat_tank_target(20 * j - 60, -30 + 10*j, mass=100 * j)

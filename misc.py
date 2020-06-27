@@ -1,11 +1,10 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4, CollisionSegment, CollisionNode, \
-    CollisionSphere
+    CollisionSphere, KeyboardButton
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
-from tank import LaserGun, LASER_KEY
-
+LASER_KEY = KeyboardButton.ascii_key(b'l')
 
 @Component()
 class Living:
@@ -28,6 +27,13 @@ class LifeSystem(System):
             if living.accum_damage > 0:
                 living.hp -= living.accum_damage
                 print(f"got {living.accum_damage} damage. HP:{living.hp}")
+
+
+@Component()
+class LaserGun:
+    range: int = 30
+    fire_time: int = None
+    laser_node_path = None
 
 
 class LaserSystem(System):
@@ -81,3 +87,4 @@ class LaserSystem(System):
             if globalClock.getRealTime() - laser_gun.fire_time > self.duration:
                 laser_gun.laser_node_path.hide()
                 laser_gun.fire_time = None
+
