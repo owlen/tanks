@@ -3,6 +3,7 @@ from wecs import panda3d
 from wecs.panda3d import Model
 
 import DustSytem
+import misc
 import movement
 import tank
 
@@ -19,34 +20,45 @@ system_types = [
     DustSytem.DustSystem,
     # tank.TankTouchesBoundary,
     movement.PrintMsg,
+    misc.LaserSystem,
+    misc.LifeSystem,
+
 ]
 
 
-def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
+def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0, turn=3):
     base.ecs_world.create_entity(
         tank.Tank(),
         panda3d.Model(),
         panda3d.Geometry(file),
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
-        movement.MovingMass(heading=angle, mass=mass),
+        movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
+        misc.LaserGun(),
         movement.Msg(rate=print_rate),
     )
 
 
-creat_tank(x=0, y=30, angle=0, mass=500, print_rate=120)
-creat_tank(x=40, y=0, angle=0, mass=2000, print_rate=120)
-creat_tank(x=20, y=-20, angle=0, mass=5000, print_rate=120)
+def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
+    base.ecs_world.create_entity(
+        tank.Tank(),
+        panda3d.Model(),
+        panda3d.Geometry(file),
+        panda3d.Scene(node=base.render),
+        panda3d.Position(value=Vec3(x, y, 0)),
+        # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
+        misc.TakesDamage(),
+        movement.Msg(rate=print_rate),
+        misc.Living(),
+    )
 
-# for j in range(1, 5):
-#     creat_tank(10 * j, 40, heading=90, mass=100*j)
 
+creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
+creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 
-# for i in range(-1, 2):
-#     for j in range(-1, 2):
-#         creat_tank(10 * i, 10 * j, heading=randint(0, 359), mass=3000)
-
+for j in range(1, 5):
+    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=100 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
@@ -55,15 +67,18 @@ circle = base.ecs_world.create_entity(
     panda3d.Position(value=Vec3(0, 0, 0)),
 )
 
+# myTexture = loader.loadTexture("myTexture.png")
+
+
 # the rest is to show a 50m circle
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
 base.camera.set_pos(0, -50, 20)
 base.camLens.setFov(60)
-base.camera.set_pos(0, -70, 40)
-base.camLens.setFov(60)
-base.camera.look_at(0, 0, -1)
+base.camera.set_pos(0, -80, 40)
+base.camLens.setFov(70)
+base.camera.look_at(0, 0, -10)
 
 base.enableParticles()
 

@@ -5,6 +5,10 @@ from wecs.panda3d import Model
 
 from movement import MovingMass
 
+BREAK_KEY = KeyboardButton.ascii_key(b'b')
+THROTTLE_UP_KEY = KeyboardButton.ascii_key(b'+')
+THROTTLE_DOWN_KEY = KeyboardButton.ascii_key(b'-')
+
 
 @Component()
 class Tank:
@@ -44,14 +48,11 @@ class GiveTankMoveCommands(System):
             # Store movement
             # movement.value.y = delta
 
-            throttle_up_key = KeyboardButton.ascii_key(b'+')
-            throttle_down_key = KeyboardButton.ascii_key(b'-')
-            break_key = KeyboardButton.ascii_key(b'b')
-            if base.mouseWatcherNode.is_button_down(throttle_up_key):
+            if base.mouseWatcherNode.is_button_down(THROTTLE_UP_KEY):
                 entity[MovingMass].forward_force = min(4000, entity[MovingMass].forward_force + 100.0)
-            if base.mouseWatcherNode.is_button_down(throttle_down_key):
+            if base.mouseWatcherNode.is_button_down(THROTTLE_DOWN_KEY):
                 entity[MovingMass].forward_force = max(0, entity[MovingMass].forward_force - 100.0)
-            if base.mouseWatcherNode.is_button_down(break_key):
+            if base.mouseWatcherNode.is_button_down(BREAK_KEY):
                 entity[MovingMass].break_force = 10000
             else:
                 entity[MovingMass].break_force = 0

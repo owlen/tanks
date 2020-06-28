@@ -8,8 +8,8 @@ from movement import MovingMass
 
 @Component()
 class Duster:
-    particleMgr: ParticleEffect = None
-    dustFactor: int = 1
+    particle_mgr: ParticleEffect = None
+    dust_factor: int = 1
 
 
 class DustSystem(System):
@@ -26,16 +26,16 @@ class DustSystem(System):
         for entity in entities_by_filter['dusters']:
             duster = entity[Duster]
             moving = entity[MovingMass]
-            if duster.particleMgr.isEnabled():
+            if duster.particle_mgr.isEnabled():
                 if moving.velocity < 2:
-                    duster.particleMgr.disable()
+                    duster.particle_mgr.disable()
                 else:
                     # TODO should be acceleration * mass
-                    r = duster.dustFactor / moving.velocity
-                    duster.particleMgr.getParticlesList()[0].setBirthRate(r)
+                    r = duster.dust_factor / moving.velocity
+                    duster.particle_mgr.getParticlesList()[0].setBirthRate(r)
             elif moving.velocity > 3:
-                # duster.particleMgr.enable()
-                duster.particleMgr.start(parent=entity[Model].node, renderParent=render)
+                # duster.particle_mgr.enable()
+                duster.particle_mgr.start(parent=entity[Model].node, renderParent=render)
 
     def enter_filter_dusters(self, entity):
         model = entity[Model]
@@ -47,5 +47,5 @@ class DustSystem(System):
         p.set_y(-3)
         p0 = p.getParticlesList()[0]
         p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 2.0000))
-        entity[Duster].particleMgr = p
-        entity[Duster].dustFactor = 1000 / entity[MovingMass].mass
+        entity[Duster].particle_mgr = p
+        entity[Duster].dust_factor = 1000 / entity[MovingMass].mass
