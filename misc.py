@@ -6,6 +6,7 @@ from wecs.panda3d import Model
 
 LASER_KEY = KeyboardButton.ascii_key(b'l')
 
+
 @Component()
 class Living:
     hp: int = 100
@@ -23,10 +24,16 @@ class LifeSystem(System):
 
     def update(self, entities_by_filter):
         for mortal in entities_by_filter['mortals']:
+            model = mortal[Model]
             living = mortal[Living]
             if living.accum_damage > 0:
                 living.hp -= living.accum_damage
                 print(f"got {living.accum_damage} damage. HP:{living.hp}")
+                living.accum_damage = 0
+                if living.hp < 0:
+                    print("BOOM")
+            if living.hp < 0:
+                model.node.setZ(model.node.getZ() + 2 * globalClock.dt)
 
 
 @Component()
@@ -34,17 +41,20 @@ class LaserGun:
     range: int = 30
     fire_time: int = None
     laser_node_path = None
+    damage: int = 5
+
+
+@Component()
+class TakesDamage:
+    size: int = 2
 
 
 class LaserSystem(System):
     entity_filters = {
-        'guns': and_filter([LaserGun, Model])
+        'targets': and_filter([TakesDamage, Model]),
+        'guns': and_filter([LaserGun, Model]),
     }
     duration = 0.3
-
-    # handler = CollisionHandlerQueue()
-    # base.cTrav = CollisionTraverser()
-    # base.cTrav.show_collisions(base.render)
 
     def __init__(self):
         super().__init__()
@@ -60,6 +70,7 @@ class LaserSystem(System):
         model = entity[Model]
         model.node.set_hpr(0, 0, 0)
 
+        # create green laser line
         segs = LineSegs()
         segs.set_thickness(2.0)
         segs.set_color(VBase4(.6, 1, .1, 1))
@@ -73,20 +84,34 @@ class LaserSystem(System):
         ray_node = CollisionNode("RAY")
         ray_node.add_solid(ray)
         ray_node.set_from_collide_mask(1)
+        ray_node.set_into_collide_mask(0)
         ray_np = model.node.attach_new_node(ray_node)
+        ray_np.set_python_tag("damage", entity[LaserGun].damage)
         ray_np.show()
-        # base.cTrav.add_collider(ray_np, self.handler)
         self.traverser.add_collider(ray_np, self.handler)
+
+    def enter_filter_targets(self, entity):
+        model = entity[Model]
+        model.node.set_hpr(0, 0, 0)
 
         sphere = CollisionSphere((0, 0, 1), 3)
         sphere_node = CollisionNode("TANK-SPHERE")
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)
         into_np = model.node.attach_new_node(sphere_node)
+        into_np.set_python_tag("live", entity[Living])
         into_np.show()
+        model.node.ls()
 
     def update(self, entities_by_filter):
         self.traverser.traverse(base.render)
+        for entry in self.handler.getEntries():
+            life = entry.getIntoNodePath().get_python_tag('live')
+            damage = entry.getFromNodePath().get_python_tag('damage')
+            life.accum_damage += damage
+            # print(f"hit:{entry.getIntoNodePath()} - {life}")
+            # print(f"hit:{entry.getFromNodePath()} - {damage}")
+
         for gun in entities_by_filter['guns']:
             laser_gun = gun[LaserGun]
 
@@ -99,4 +124,3 @@ class LaserSystem(System):
             if globalClock.getRealTime() - laser_gun.fire_time > self.duration:
                 laser_gun.laser_node_path.hide()
                 laser_gun.fire_time = None
-
