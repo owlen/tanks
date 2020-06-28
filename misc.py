@@ -1,6 +1,6 @@
 from direct.showbase.ShowBaseGlobal import globalClock
-from panda3d.core import CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4, CollisionSegment, CollisionNode, \
-    CollisionSphere, KeyboardButton
+from panda3d.core import KeyboardButton, CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4, CollisionSegment, \
+    CollisionNode, CollisionSphere
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
@@ -42,9 +42,19 @@ class LaserSystem(System):
     }
     duration = 0.3
 
-    handler = CollisionHandlerQueue()
-    base.cTrav = CollisionTraverser()
-    base.cTrav.show_collisions(base.render)
+    # handler = CollisionHandlerQueue()
+    # base.cTrav = CollisionTraverser()
+    # base.cTrav.show_collisions(base.render)
+
+    def __init__(self):
+        super().__init__()
+        self.handler = CollisionHandlerQueue()
+        self.traverser = CollisionTraverser()
+        self.traverser.showCollisions(base.render)
+        # You'll probably have to add a reference to the entity in your into nodes.
+        # Or you empty the queue to get a set of all nodes that have been hit, then you
+        # iterate over your entities to see which ones have nodes in the set.
+        # The latter is IMO simpler, but slower.
 
     def enter_filter_guns(self, entity):
         model = entity[Model]
@@ -65,16 +75,18 @@ class LaserSystem(System):
         ray_node.set_from_collide_mask(1)
         ray_np = model.node.attach_new_node(ray_node)
         ray_np.show()
-        base.cTrav.add_collider(ray_np, self.handler)
+        # base.cTrav.add_collider(ray_np, self.handler)
+        self.traverser.add_collider(ray_np, self.handler)
 
         sphere = CollisionSphere((0, 0, 1), 3)
         sphere_node = CollisionNode("TANK-SPHERE")
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)
         into_np = model.node.attach_new_node(sphere_node)
-        # into_np.show()
+        into_np.show()
 
     def update(self, entities_by_filter):
+        self.traverser.traverse(base.render)
         for gun in entities_by_filter['guns']:
             laser_gun = gun[LaserGun]
 

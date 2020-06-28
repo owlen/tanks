@@ -68,6 +68,9 @@ circle = base.ecs_world.create_entity(
     panda3d.Position(value=Vec3(0, 0, 0)),
 )
 
+# myTexture = loader.loadTexture("myTexture.png")
+
+
 # the rest is to show a 50m circle
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
