@@ -1,4 +1,4 @@
-from panda3d.core import Vec3
+from panda3d.core import Vec3, CardMaker
 from wecs import panda3d
 from wecs.panda3d import Model
 
@@ -63,6 +63,14 @@ base.camera.set_pos(0, -50, 20)
 base.camLens.setFov(60)
 base.camera.set_pos(0, -70, 40)
 base.camLens.setFov(60)
-base.camera.look_at(0, 0, -10)
+base.camera.look_at(0, 0, -1)
 
 base.enableParticles()
+
+groundTexture = loader.loadTexture("resources/ground1.jpg")
+cm = CardMaker('card')
+cm.set_frame(-50, 50, -50, 50)
+card = render.attachNewNode(cm.generate())
+card.setP(-90)
+card.setZ(-1)
+card.setTexture(groundTexture)
