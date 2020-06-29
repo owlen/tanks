@@ -62,8 +62,8 @@ class MoveMassSystem(System):
             aerodynamic_factor = 2
             air_resistance = moving_mass.velocity ** 2 * aerodynamic_factor
             # resultant force is sum of forces
-            resultant_force = moving_mass.forward_force - air_resistance - \
-                              moving_mass.friction - moving_mass.break_force
+            resultant_force = \
+                moving_mass.forward_force - air_resistance - moving_mass.friction - moving_mass.break_force
             # velocity grows by acceleration*dt, can't be negative
             moving_mass.acceleration = resultant_force / moving_mass.mass
             moving_mass.velocity = max(0, moving_mass.velocity + moving_mass.acceleration * dt)

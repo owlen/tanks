@@ -3,6 +3,7 @@ from wecs.core import Component, and_filter
 from wecs.core import System
 from wecs.panda3d import Model
 
+import game
 from movement import MovingMass
 
 BREAK_KEY = KeyboardButton.ascii_key(b'b')
@@ -40,19 +41,19 @@ class GiveTankMoveCommands(System):
 
             # Read player input
             delta = 0
-            if base.mouseWatcherNode.is_button_down(up_key):
+            if game.base.mouseWatcherNode.is_button_down(up_key):
                 delta += 1
-            if base.mouseWatcherNode.is_button_down(down_key):
+            if game.base.mouseWatcherNode.is_button_down(down_key):
                 delta -= 1
 
             # Store movement
             # movement.value.y = delta
 
-            if base.mouseWatcherNode.is_button_down(THROTTLE_UP_KEY):
+            if game.base.mouseWatcherNode.is_button_down(THROTTLE_UP_KEY):
                 entity[MovingMass].forward_force = min(4000, entity[MovingMass].forward_force + 100.0)
-            if base.mouseWatcherNode.is_button_down(THROTTLE_DOWN_KEY):
+            if game.base.mouseWatcherNode.is_button_down(THROTTLE_DOWN_KEY):
                 entity[MovingMass].forward_force = max(0, entity[MovingMass].forward_force - 100.0)
-            if base.mouseWatcherNode.is_button_down(BREAK_KEY):
+            if game.base.mouseWatcherNode.is_button_down(BREAK_KEY):
                 entity[MovingMass].break_force = 10000
             else:
                 entity[MovingMass].break_force = 0

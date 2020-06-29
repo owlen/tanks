@@ -1,10 +1,28 @@
+from direct.particles import ParticleEffect
 from direct.showbase.ShowBaseGlobal import globalClock
-from panda3d.core import KeyboardButton, CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4, CollisionSegment, \
-    CollisionNode, CollisionSphere
+from panda3d.core import CollisionSegment, CollisionNode, CollisionSphere
+from panda3d.core import KeyboardButton, CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
+import game
+
 LASER_KEY = KeyboardButton.ascii_key(b'l')
+
+
+@Component()
+class Smoking:
+    particle_mgr: ParticleEffect = None
+
+
+class SmokeSystem(System):
+    entity_filters = {
+        'smokers': and_filter([Smoking, Model])
+    }
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['smokers']:
+            print(f"smoke:{entity}")
 
 
 @Component()
@@ -32,6 +50,8 @@ class LifeSystem(System):
                 living.accum_damage = 0
                 if living.hp < 0:
                     print("BOOM")
+                    model.node.set_r(160)
+                    del mortal[Living]
             if living.hp < 0:
                 model.node.setZ(model.node.getZ() + 2 * globalClock.dt)
 
@@ -60,7 +80,7 @@ class LaserSystem(System):
         super().__init__()
         self.handler = CollisionHandlerQueue()
         self.traverser = CollisionTraverser()
-        self.traverser.showCollisions(base.render)
+        self.traverser.showCollisions(game.base.render)
         # You'll probably have to add a reference to the entity in your into nodes.
         # Or you empty the queue to get a set of all nodes that have been hit, then you
         # iterate over your entities to see which ones have nodes in the set.
@@ -100,23 +120,19 @@ class LaserSystem(System):
         sphere_node.set_into_collide_mask(1)
         into_np = model.node.attach_new_node(sphere_node)
         into_np.set_python_tag("live", entity[Living])
-        into_np.show()
-        model.node.ls()
 
     def update(self, entities_by_filter):
-        self.traverser.traverse(base.render)
+        self.traverser.traverse(game.base.render)
         for entry in self.handler.getEntries():
             life = entry.getIntoNodePath().get_python_tag('live')
             damage = entry.getFromNodePath().get_python_tag('damage')
             life.accum_damage += damage
-            # print(f"hit:{entry.getIntoNodePath()} - {life}")
-            # print(f"hit:{entry.getFromNodePath()} - {damage}")
 
         for gun in entities_by_filter['guns']:
             laser_gun = gun[LaserGun]
 
             if not laser_gun.fire_time:
-                if base.mouseWatcherNode.is_button_down(LASER_KEY):
+                if game.base.mouseWatcherNode.is_button_down(LASER_KEY):
                     laser_gun.fire_time = globalClock.getRealTime()
                 else:
                     return

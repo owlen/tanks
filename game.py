@@ -1,3 +1,5 @@
+import builtins
+
 from panda3d.core import Vec3, CardMaker
 from wecs import panda3d
 from wecs.panda3d import Model
@@ -21,9 +23,17 @@ system_types = [
     # tank.TankTouchesBoundary,
     movement.PrintMsg,
     misc.LaserSystem,
+    misc.SmokeSystem,
     misc.LifeSystem,
 
 ]
+
+# noinspection PyUnresolvedReferences
+base = builtins.base
+# noinspection PyUnresolvedReferences
+loader = builtins.loader
+# noinspection PyUnresolvedReferences
+render = builtins.render
 
 
 def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0, turn=3):
@@ -40,6 +50,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
     )
 
 
+# noinspection PyUnusedLocal
 def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
     base.ecs_world.create_entity(
         tank.Tank(),

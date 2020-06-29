@@ -1,10 +1,12 @@
 from panda3d.core import loadPrcFileData
+
 # loadPrcFileData("", "want-directtools #t")
 # loadPrcFileData("", "want-tk #t")
 loadPrcFileData("", "win-origin 1000 400")
 loadPrcFileData("", "window-title TANKS")
 loadPrcFileData("", "audio-library-name null")
 loadPrcFileData("", "show-frame-rate-meter true")
+
 from wecs import boilerplate
 
 

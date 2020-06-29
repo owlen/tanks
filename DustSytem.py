@@ -3,6 +3,7 @@ from panda3d.core import LVector3
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
+import game
 from movement import MovingMass
 
 
@@ -35,7 +36,7 @@ class DustSystem(System):
                     duster.particle_mgr.getParticlesList()[0].setBirthRate(r)
             elif moving.velocity > 3:
                 # duster.particle_mgr.enable()
-                duster.particle_mgr.start(parent=entity[Model].node, renderParent=render)
+                duster.particle_mgr.start(parent=entity[Model].node, renderParent=game.render)
 
     def enter_filter_dusters(self, entity):
         model = entity[Model]
