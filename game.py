@@ -5,6 +5,7 @@ from wecs import panda3d
 from wecs.panda3d import Model
 
 import DustSytem
+import laser
 import misc
 import movement
 import tank
@@ -22,7 +23,7 @@ system_types = [
     DustSytem.DustSystem,
     # tank.TankTouchesBoundary,
     movement.PrintMsg,
-    misc.LaserSystem,
+    laser.LaserSystem,
     misc.SmokeSystem,
     misc.LifeSystem,
 
@@ -45,7 +46,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         panda3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
-        misc.LaserGun(),
+        laser.LaserGun(),
         movement.Msg(rate=print_rate),
     )
 
