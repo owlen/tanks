@@ -13,12 +13,12 @@ class LaserGun:
     range: int = 30
     fire_time: int = None
     laser_node_path = None
-    damage: int = 5
+    damage: int = 2
 
 
 class LaserSystem(System):
     entity_filters = {
-        'targets': and_filter([TakesDamage, Model]),
+        'targets': and_filter([TakesDamage, Model, TakesDamage]),
         'guns': and_filter([LaserGun, Model]),
     }
     duration = 0.3
@@ -61,7 +61,7 @@ class LaserSystem(System):
         model = entity[Model]
         model.node.set_hpr(0, 0, 0)
 
-        sphere = CollisionSphere((0, 0, 1), 3)
+        sphere = CollisionSphere((0, 0, 1), 3)  # TODO sphere size should depend on TakesDamage
         sphere_node = CollisionNode("TANK-SPHERE")
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)

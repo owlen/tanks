@@ -26,7 +26,7 @@ system_types = [
     laser.LaserSystem,
     misc.SmokeSystem,
     misc.LifeSystem,
-
+    misc.CameraSystem,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -47,7 +47,9 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
         laser.LaserGun(),
+        misc.TakesDamage(),
         movement.Msg(rate=print_rate),
+        misc.Living()
     )
 
 
@@ -78,9 +80,6 @@ circle = base.ecs_world.create_entity(
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(0, 0, 0)),
 )
-
-# myTexture = loader.loadTexture("myTexture.png")
-
 
 # the rest is to show a 50m circle
 base.ecs_world._flush_component_updates()

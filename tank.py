@@ -4,6 +4,7 @@ from wecs.core import System
 from wecs.panda3d import Model
 
 import game
+from misc import Living
 from movement import MovingMass
 
 BREAK_KEY = KeyboardButton.ascii_key('b')
@@ -21,10 +22,7 @@ class GiveTankMoveCommands(System):
     entity_filters = {
         # 'tanks': Tank
 
-        'tanks': and_filter([
-            MovingMass,
-            Tank,
-        ]),
+        'tanks': and_filter([MovingMass, Tank, Living]),
     }
 
     def enter_filter_tanks(self, entity):
@@ -33,7 +31,8 @@ class GiveTankMoveCommands(System):
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
-            # movement = entity[Movement]
+            if not entity[Living]:
+                return
 
             # What keys does the player use?
             up_key = KeyboardButton.ascii_key(b'w')
