@@ -1,6 +1,6 @@
 from direct.particles import ParticleEffect
 from direct.showbase.ShowBaseGlobal import globalClock
-from panda3d.core import KeyboardButton, Vec3
+from panda3d.core import KeyboardButton, Vec3, TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
@@ -85,3 +85,32 @@ class LifeSystem(System):
 @Component()
 class TakesDamage:
     sphere_size: int = 2
+
+
+@Component()
+class TextLabel:
+    text: str = 'text!'
+    text_node: TextNode = None
+
+
+class TextLabelSystem(System):
+    entity_filters = {
+        'labels': and_filter([TextLabel, Model, Living])
+    }
+
+    def enter_filter_labels(self, entity):
+        print(entity[TextLabel])
+        model = entity[Model]
+        text = entity[TextLabel].text
+        print(f"entered label. parent: {model}")
+        entity[TextLabel].text_node = TextNode('text node')
+        entity[TextLabel].text_node.setText(text)
+        entity[TextLabel].text_node.setAlign(TextNode.ACenter)
+        text_node_path = model.node.attachNewNode(entity[TextLabel].text_node)
+        text_node_path.setScale(2)
+        text_node_path.set_pos(0, 0, 3)
+        text_node_path.setBillboardPointEye()
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['labels']:
+            entity[TextLabel].text_node.setText(f"HP:{entity[Living].hp}")  # TODO text should be set by other system...

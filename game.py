@@ -1,8 +1,8 @@
 import builtins
 
+import wecs.panda3d as wp3d
 from panda3d.core import Vec3, CardMaker
 from wecs import panda3d
-from wecs.panda3d import Model
 
 import DustSytem
 import laser
@@ -27,6 +27,7 @@ system_types = [
     misc.SmokeSystem,
     misc.LifeSystem,
     misc.CameraSystem,
+    misc.TextLabelSystem,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -38,24 +39,26 @@ render = builtins.render
 
 
 def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0, turn=3):
-    base.ecs_world.create_entity(
+    return base.ecs_world.create_entity(
         tank.Tank(),
-        panda3d.Model(),
+        wp3d.UpdateBillboards(),
+        wp3d.Model(),
         panda3d.Geometry(file),
-        panda3d.Scene(node=base.render),
-        panda3d.Position(value=Vec3(x, y, 0)),
+        wp3d.Scene(node=base.render),
+        wp3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
         laser.LaserGun(),
         misc.TakesDamage(),
         movement.Msg(rate=print_rate),
-        misc.Living()
+        misc.Living(),
+        misc.TextLabel(text="-TANK-"),
     )
 
 
 # noinspection PyUnusedLocal
 def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
-    base.ecs_world.create_entity(
+    return base.ecs_world.create_entity(
         tank.Tank(),
         panda3d.Model(),
         panda3d.Geometry(file),
@@ -65,11 +68,17 @@ def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", 
         misc.TakesDamage(),
         movement.Msg(rate=print_rate),
         misc.Living(),
+        misc.TextLabel(text="-TANK-"),
     )
 
 
-creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
+t1 = creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
 creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+
+# print(f"t1 - {t1} {t1[tank.Tank()]}")
+# base.ecs_world.create_entity(
+#     misc.TextLabel(text="-TANK-", parent=t1)
+# )
 
 for j in range(1, 5):
     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=100 * j)
@@ -83,7 +92,7 @@ circle = base.ecs_world.create_entity(
 
 # the rest is to show a 50m circle
 base.ecs_world._flush_component_updates()
-circle[Model].node.set_scale(50)
+circle[wp3d.Model].node.set_scale(50)
 
 base.camera.set_pos(0, -50, 20)
 base.camLens.setFov(60)
