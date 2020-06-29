@@ -6,9 +6,9 @@ from wecs.panda3d import Model
 import game
 from movement import MovingMass
 
-BREAK_KEY = KeyboardButton.ascii_key(b'b')
-THROTTLE_UP_KEY = KeyboardButton.ascii_key(b'+')
-THROTTLE_DOWN_KEY = KeyboardButton.ascii_key(b'-')
+BREAK_KEY = KeyboardButton.ascii_key('b')
+THROTTLE_UP_KEY = KeyboardButton.ascii_key('+')
+THROTTLE_DOWN_KEY = KeyboardButton.ascii_key('-')
 
 
 @Component()

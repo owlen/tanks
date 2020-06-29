@@ -7,7 +7,7 @@ from wecs.panda3d import Model
 
 import game
 
-LASER_KEY = KeyboardButton.ascii_key(b'l')
+LASER_KEY = KeyboardButton.ascii_key('l')
 
 
 @Component()
