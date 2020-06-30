@@ -59,9 +59,10 @@ class LaserSystem(System):
 
     def enter_filter_targets(self, entity):
         model = entity[Model]
+        damage = entity[TakesDamage]
         model.node.set_hpr(0, 0, 0)
 
-        sphere = CollisionSphere((0, 0, 1), 3)  # TODO sphere size should depend on TakesDamage
+        sphere = CollisionSphere((0, 0, 1), damage.sphere_size)
         sphere_node = CollisionNode("TANK-SPHERE")
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)

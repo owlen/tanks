@@ -49,7 +49,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
         laser.LaserGun(),
-        misc.TakesDamage(),
+        misc.TakesDamage(sphere_size=3),
         movement.Msg(rate=print_rate),
         misc.Living(),
         misc.TextLabel(text="-TANK-"),

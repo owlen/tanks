@@ -28,7 +28,7 @@ class CameraSystem(System):
                 camera.set_pos(camera, 20 * x * globalClock.dt, 0, 0)
                 camera.lookAt(look_at)
             if (abs(y) > 0.7):
-                camera.set_pos(camera, 0, 0, 15 * y * globalClock.dt)
+                camera.set_pos(camera, 0, 0, 25 * y * globalClock.dt)
                 if camera.get_z() < 1:
                     camera.set_z(1)
 
@@ -106,9 +106,13 @@ class TextLabelSystem(System):
         entity[TextLabel].text_node = TextNode('text node')
         entity[TextLabel].text_node.setText(text)
         entity[TextLabel].text_node.setAlign(TextNode.ACenter)
+        entity[TextLabel].text_node.setTextColor(1, 1, 0.2, 1)
+        # entity[TextLabel].text_node.setShadow(0.05, 0.05)
+        # entity[TextLabel].text_node.setShadowColor(0.2, 0.2, 1, 1)
+
         text_node_path = model.node.attachNewNode(entity[TextLabel].text_node)
         text_node_path.setScale(2)
-        text_node_path.set_pos(0, 0, 3)
+        text_node_path.set_pos(0, 0, 4)
         text_node_path.setBillboardPointEye()
 
     def update(self, entities_by_filter):
