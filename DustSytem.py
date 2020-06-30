@@ -23,21 +23,6 @@ class DustSystem(System):
         ]),
     }
 
-    def update(self, entities_by_filter):
-        for entity in entities_by_filter['dusters']:
-            duster = entity[Duster]
-            moving = entity[MovingMass]
-            if duster.particle_mgr.isEnabled():
-                if moving.velocity < 2:
-                    duster.particle_mgr.disable()
-                else:
-                    # TODO should be acceleration * mass
-                    r = duster.dust_factor / moving.velocity
-                    duster.particle_mgr.getParticlesList()[0].setBirthRate(r)
-            elif moving.velocity > 3:
-                # duster.particle_mgr.enable()
-                duster.particle_mgr.start(parent=entity[Model].node, renderParent=game.render)
-
     def enter_filter_dusters(self, entity):
         model = entity[Model]
         model.node.set_hpr(0, 0, 0)
@@ -50,3 +35,19 @@ class DustSystem(System):
         p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 2.0000))
         entity[Duster].particle_mgr = p
         entity[Duster].dust_factor = 1000 / entity[MovingMass].mass
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['dusters']:
+            duster = entity[Duster]
+            moving = entity[MovingMass]
+            if duster.particle_mgr.isEnabled():
+                if moving.velocity < 2:
+                    duster.particle_mgr.disable()
+                else:
+                    # TODO should be jerk = change in acceleration
+                    r = duster.dust_factor / moving.velocity
+                    duster.particle_mgr.getParticlesList()[0].setBirthRate(r)
+            elif moving.velocity > 3:
+                # duster.particle_mgr.enable()
+                duster.particle_mgr.start(parent=entity[Model].node, renderParent=game.render)
+
