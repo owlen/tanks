@@ -5,8 +5,6 @@ from wecs.core import and_filter
 from wecs.panda3d import Model, sqrt
 from wecs.panda3d import Position
 
-from misc import Living
-
 
 @Component()
 class Msg:
@@ -59,12 +57,6 @@ class MoveMassSystem(System):
         for entity in entities_by_filter['move']:
             moving_mass = entity[MovingMass]
             model = entity[Model]
-
-            if Living in entity and entity[Living].hp <= 0:
-                if moving_mass.velocity > 0:
-                    moving_mass.forward_force = 0
-                    moving_mass.friction *= 15
-                    moving_mass.turn /= 2
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2

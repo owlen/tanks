@@ -28,7 +28,7 @@ class LaserSystem(System):
         super().__init__()
         self.queue = CollisionHandlerQueue()
         self.traverser = CollisionTraverser()
-        self.traverser.showCollisions(game.base.render)
+        # self.traverser.showCollisions(game.base.render)
 
     def enter_filter_guns(self, entity):
         model = entity[Model]
@@ -69,8 +69,16 @@ class LaserSystem(System):
         sphere_node = CollisionNode("TANK-SPHERE")
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)
-        into_np = model.node.attach_new_node(sphere_node)
-        into_np.set_python_tag('live', entity[Living])
+        target_np = model.node.attach_new_node(sphere_node)
+        target_np.set_python_tag('live', entity[Living])
+        target_np.show()
+        entity[TakesDamage].target_np = target_np
+
+    def exit_filter_targets(self, entity):
+        print("remove target!", entity)
+        target_np = entity[TakesDamage].target_np
+        target_np.hide()
+        del entity[TakesDamage].target_np
 
     def update(self, entities_by_filter):
         self.traverser.traverse(game.base.render)

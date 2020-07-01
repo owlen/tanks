@@ -53,6 +53,7 @@ class SmokeSystem(System):
 @Component()
 class TakesDamage:
     sphere_size: int = 2
+    target_np = None
 
 
 @Component()
@@ -112,11 +113,11 @@ class LifeSystem(System):
                 living.hp -= living.accum_damage
                 # print(f"got {living.accum_damage} damage. HP:{living.hp}")
                 living.accum_damage = 0
-                if living.hp < 0:  # entity is dead
-                    living.alive = False
-                    print("BOOM")
-                    model.node.set_r(160)
-                    model.node.set_z(2)
-                    del mortal[Living]
+                # if living.hp < 0:  # entity is dead
+                #     living.alive = False
+                #     print("BOOM")
+                #     model.node.set_r(160)
+                #     model.node.set_z(2)
+                #     del mortal[Living]
             if TextLabel in mortal:
                 mortal[TextLabel].text = f"hp:{mortal[Living].hp}"
