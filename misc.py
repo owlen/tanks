@@ -24,10 +24,10 @@ class CameraSystem(System):
         if base.mouseWatcherNode.hasMouse():
             x = base.mouseWatcherNode.getMouseX()
             y = base.mouseWatcherNode.getMouseY()
-            if (abs(x) > 0.7):
+            if abs(x) > 0.7:
                 camera.set_pos(camera, 20 * x * globalClock.dt, 0, 0)
                 camera.lookAt(look_at)
-            if (abs(y) > 0.7):
+            if abs(y) > 0.7:
                 camera.set_pos(camera, 0, 0, 25 * y * globalClock.dt)
                 if camera.get_z() < 1:
                     camera.set_z(1)
@@ -74,7 +74,7 @@ class LifeSystem(System):
                 living.hp -= living.accum_damage
                 # print(f"got {living.accum_damage} damage. HP:{living.hp}")
                 living.accum_damage = 0
-                if living.hp < 0:
+                if living.hp < 0:  # entity is dead
                     living.alive = False
                     print("BOOM")
                     model.node.set_r(160)

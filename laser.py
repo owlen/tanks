@@ -18,8 +18,8 @@ class LaserGun:
 
 class LaserSystem(System):
     entity_filters = {
-        'targets': and_filter([TakesDamage, Model, TakesDamage]),
-        'guns': and_filter([LaserGun, Model]),
+        'targets': and_filter([TakesDamage, Model, TakesDamage, Living]),
+        'guns': and_filter([LaserGun, Model, Living]),
     }
     duration = 0.3
 
@@ -28,10 +28,6 @@ class LaserSystem(System):
         self.handler = CollisionHandlerQueue()
         self.traverser = CollisionTraverser()
         self.traverser.showCollisions(game.base.render)
-        # You'll probably have to add a reference to the entity in your into nodes.
-        # Or you empty the queue to get a set of all nodes that have been hit, then you
-        # iterate over your entities to see which ones have nodes in the set.
-        # The latter is IMO simpler, but slower.
 
     def enter_filter_guns(self, entity):
         model = entity[Model]
@@ -56,6 +52,9 @@ class LaserSystem(System):
         ray_np.set_python_tag("damage", entity[LaserGun].damage)
         ray_np.show()
         self.traverser.add_collider(ray_np, self.handler)
+
+    def exit_filter_guns(self, entity):
+        print("remove LaserGun")
 
     def enter_filter_targets(self, entity):
         model = entity[Model]
