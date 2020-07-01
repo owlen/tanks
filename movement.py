@@ -61,10 +61,10 @@ class MoveMassSystem(System):
             model = entity[Model]
 
             if Living in entity and entity[Living].hp <= 0:
-                print("dead. stopping")
-                moving_mass.forward_force = 0
-                moving_mass.friction *= 15
-                moving_mass.turn /= 2
+                if moving_mass.velocity > 0:
+                    moving_mass.forward_force = 0
+                    moving_mass.friction *= 15
+                    moving_mass.turn /= 2
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2

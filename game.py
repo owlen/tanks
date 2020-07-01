@@ -28,6 +28,7 @@ system_types = [
     misc.LifeSystem,
     misc.CameraSystem,
     misc.TextLabelSystem,
+    tank.HandleTankDestruction,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -57,7 +58,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
 
 
 # noinspection PyUnusedLocal
-def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0):
+def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", print_rate=0):
     return base.ecs_world.create_entity(
         tank.Tank(),
         panda3d.Model(),
@@ -77,12 +78,13 @@ base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file="resources/tank.bam"),
     panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(-20, -30, 0)),
-    movement.MovingMass(heading=90, mass=50),
+    panda3d.Position(value=Vec3(0, 40, 0)),
+    movement.MovingMass(heading=90, mass=5000),
     misc.TakesDamage(),
+    laser.LaserGun(),
     movement.Msg(rate=0),
     misc.Living(hp=200),
-    # misc.TextLabel(text="-TARGET-"),
+    misc.TextLabel(text="-new-"),
 )
 
 creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)

@@ -13,6 +13,7 @@ class LaserGun:
     range: int = 30
     fire_time: int = None
     laser_node_path = None
+    ray_np = None
     damage: int = 2
 
 
@@ -25,7 +26,7 @@ class LaserSystem(System):
 
     def __init__(self):
         super().__init__()
-        self.handler = CollisionHandlerQueue()
+        self.queue = CollisionHandlerQueue()
         self.traverser = CollisionTraverser()
         self.traverser.showCollisions(game.base.render)
 
@@ -51,10 +52,13 @@ class LaserSystem(System):
         ray_np = model.node.attach_new_node(ray_node)
         ray_np.set_python_tag("damage", entity[LaserGun].damage)
         ray_np.show()
-        self.traverser.add_collider(ray_np, self.handler)
+        self.traverser.add_collider(ray_np, self.queue)
+        entity[LaserGun].ray_np = ray_np
 
     def exit_filter_guns(self, entity):
-        print("remove LaserGun")
+        ray_np = entity[LaserGun].ray_np
+        ray_np.hide()
+        self.traverser.removeCollider(ray_np)
 
     def enter_filter_targets(self, entity):
         model = entity[Model]
@@ -66,11 +70,11 @@ class LaserSystem(System):
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)
         into_np = model.node.attach_new_node(sphere_node)
-        into_np.set_python_tag("live", entity[Living])
+        into_np.set_python_tag('live', entity[Living])
 
     def update(self, entities_by_filter):
         self.traverser.traverse(game.base.render)
-        for entry in self.handler.getEntries():
+        for entry in self.queue.getEntries():
             life = entry.getIntoNodePath().get_python_tag('live')
             damage = entry.getFromNodePath().get_python_tag('damage')
             life.accum_damage += damage

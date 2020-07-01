@@ -4,6 +4,7 @@ from wecs.core import System
 from wecs.panda3d import Model
 
 import game
+from laser import LaserGun
 from misc import Living
 from movement import MovingMass
 
@@ -72,3 +73,15 @@ class TankTouchesBoundary(System):
 
             if distance > self.arena_radius:
                 print(f"  out  {entity} distance: {distance}")
+
+
+class HandleTankDestruction(System):
+    entity_filters = {'tanks': and_filter([Tank, Living])}
+
+    def update(self, entities_by_filter):
+        for entity in set(entities_by_filter['tanks']):
+            living = entity[Living]
+            if living.hp <= 0:
+                print(f"tank: {entity} is dead")
+                if LaserGun in entity:
+                    del entity[LaserGun]
