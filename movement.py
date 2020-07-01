@@ -5,6 +5,8 @@ from wecs.core import and_filter
 from wecs.panda3d import Model, sqrt
 from wecs.panda3d import Position
 
+from misc import Living
+
 
 @Component()
 class Msg:
@@ -58,6 +60,12 @@ class MoveMassSystem(System):
             moving_mass = entity[MovingMass]
             model = entity[Model]
 
+            if Living in entity and entity[Living].hp <= 0:
+                print("dead. stopping")
+                moving_mass.forward_force = 0
+                moving_mass.friction *= 15
+                moving_mass.turn /= 2
+
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2
             air_resistance = moving_mass.velocity ** 2 * aerodynamic_factor
@@ -82,9 +90,3 @@ class MoveMassSystem(System):
             entity[Msg].msg += f" dis: {sqrt(x * x + y * y)}"
 
             entity[Position].value = entity[Model].node.getPos()
-
-# Yes, nodepath.set_pos(nodepath, (0, 1, 0)) will move it forward by
-# 1 unit relative to its own coordinate system, which will include its rotation
-# There are other ways to do it, like 
-# nodepath.parent.get_relative_vector(nodepath, (0, 1, 0)) or 
-# nodepath.get_quat().get_forward() which both get the forward vector.

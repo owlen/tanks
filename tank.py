@@ -31,7 +31,7 @@ class GiveTankMoveCommands(System):
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
-            if not entity[Living]:
+            if entity[Living].hp < 0:
                 continue
 
             # What keys does the player use?

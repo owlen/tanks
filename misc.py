@@ -51,51 +51,19 @@ class SmokeSystem(System):
 
 
 @Component()
-class Living:
-    hp: int = 100
-    accum_damage: int = 0
-    alive: bool = True
-
-
-class LifeSystem(System):
-    entity_filters = {
-        'mortals': and_filter([Living, Model])
-    }
-
-    def enter_filter_mortals(self, entity):
-        mortal = entity[Living]
-        print(mortal)
-
-    def update(self, entities_by_filter):
-        for mortal in entities_by_filter['mortals']:
-            model = mortal[Model]
-            living = mortal[Living]
-            if living.accum_damage > 0:
-                living.hp -= living.accum_damage
-                # print(f"got {living.accum_damage} damage. HP:{living.hp}")
-                living.accum_damage = 0
-                if living.hp < 0:  # entity is dead
-                    living.alive = False
-                    print("BOOM")
-                    model.node.set_r(160)
-                    model.node.set_z(2)
-                    del mortal[Living]
-
-
-@Component()
 class TakesDamage:
     sphere_size: int = 2
 
 
 @Component()
 class TextLabel:
-    text: str = 'text!'
+    text: str = 'not set!'
     text_node: TextNode = None
 
 
 class TextLabelSystem(System):
     entity_filters = {
-        'labels': and_filter([TextLabel, Model, Living])
+        'labels': and_filter([TextLabel, Model])
     }
 
     def enter_filter_labels(self, entity):
@@ -117,4 +85,38 @@ class TextLabelSystem(System):
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['labels']:
-            entity[TextLabel].text_node.setText(f"HP:{entity[Living].hp}")  # TODO text should be set by other system...
+            entity[TextLabel].text_node.setText(entity[TextLabel].text)
+
+
+@Component()
+class Living:
+    hp: int = 100
+    accum_damage: int = 0
+    alive: bool = True
+    is_alive = True
+
+
+class LifeSystem(System):
+    entity_filters = {
+        'mortals': and_filter([Living, Model])}
+
+    def enter_filter_mortals(self, entity):
+        mortal = entity[Living]
+        print(mortal)
+
+    def update(self, entities_by_filter):
+        for mortal in entities_by_filter['mortals']:
+            model = mortal[Model]
+            living = mortal[Living]
+            if living.accum_damage > 0:
+                living.hp -= living.accum_damage
+                # print(f"got {living.accum_damage} damage. HP:{living.hp}")
+                living.accum_damage = 0
+                if living.hp < 0:  # entity is dead
+                    living.alive = False
+                    print("BOOM")
+                    model.node.set_r(160)
+                    model.node.set_z(2)
+                    del mortal[Living]
+            if TextLabel in mortal:
+                mortal[TextLabel].text = f"hp:{mortal[Living].hp}"

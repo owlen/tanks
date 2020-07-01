@@ -67,18 +67,26 @@ def creat_tank_target(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", 
         # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
         misc.TakesDamage(),
         movement.Msg(rate=print_rate),
-        misc.Living(),
-        misc.TextLabel(text="-TANK-"),
+        misc.Living(hp=200),
+        misc.TextLabel(text="-TARGET-"),
     )
 
 
-t1 = creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
-creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+base.ecs_world.create_entity(
+    tank.Tank(),
+    panda3d.Model(),
+    panda3d.Geometry(file="resources/tank.bam"),
+    panda3d.Scene(node=base.render),
+    panda3d.Position(value=Vec3(-20, -30, 0)),
+    movement.MovingMass(heading=90, mass=50),
+    misc.TakesDamage(),
+    movement.Msg(rate=0),
+    misc.Living(hp=200),
+    # misc.TextLabel(text="-TARGET-"),
+)
 
-# print(f"t1 - {t1} {t1[tank.Tank()]}")
-# base.ecs_world.create_entity(
-#     misc.TextLabel(text="-TANK-", parent=t1)
-# )
+creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
+creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 
 for j in range(1, 5):
     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=100 * j)
