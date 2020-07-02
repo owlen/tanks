@@ -5,7 +5,7 @@ from wecs.panda3d import Model
 
 import game
 from laser import LaserGun
-from misc import Living, TakesDamage
+from misc import Living, TakesDamage, TextLabel
 from movement import MovingMass
 
 BREAK_KEY = KeyboardButton.ascii_key('b')
@@ -83,6 +83,8 @@ class HandleTankDestruction(System):
             living = entity[Living]
             if living.hp <= 0:
                 print(f"tank: {entity} is dead")
+                if TextLabel in entity:
+                    entity[TextLabel].text = 'XXX'
                 del entity[Living]
                 if LaserGun in entity:
                     del entity[LaserGun]

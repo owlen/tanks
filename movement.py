@@ -5,29 +5,7 @@ from wecs.core import and_filter
 from wecs.panda3d import Model, sqrt
 from wecs.panda3d import Position
 
-
-@Component()
-class Msg:
-    msg: str = "."  # mass - Kg
-    rate: int = 30  # print every
-    rate_c: int = 0
-
-
-class PrintMsg(System):
-    entity_filters = {
-        'print': and_filter([
-            Position,
-            Msg,
-        ]),
-    }
-
-    def update(self, entities_by_filter):
-        for entity in entities_by_filter['print']:
-            if entity[Msg].rate < 1:
-                continue
-            entity[Msg].rate_c += 1
-            if entity[Msg].rate_c % entity[Msg].rate == 0:
-                print(f"msg:{entity}, {entity[Msg].msg}")
+from misc import Msg
 
 
 @Component()

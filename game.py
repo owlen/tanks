@@ -22,7 +22,7 @@ system_types = [
     movement.MoveMassSystem,
     DustSytem.DustSystem,
     # tank.TankTouchesBoundary,
-    movement.PrintMsg,
+    misc.PrintMsg,
     laser.LaserSystem,
     misc.SmokeSystem,
     misc.LifeSystem,
@@ -51,7 +51,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         DustSytem.Duster(),
         laser.LaserGun(),
         misc.TakesDamage(sphere_size=3),
-        movement.Msg(rate=print_rate),
+        misc.Msg(rate=print_rate),
         misc.Living(),
         misc.TextLabel(text="-TANK-"),
     )
@@ -65,9 +65,9 @@ def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", 
         panda3d.Geometry(file),
         panda3d.Scene(node=base.render),
         panda3d.Position(value=Vec3(x, y, 0)),
-        # movement.MovingMass(heading=angle, mass=mass),  NO MOVING MASS
+        movement.MovingMass(heading=angle, mass=mass),
         misc.TakesDamage(),
-        movement.Msg(rate=print_rate),
+        misc.Msg(rate=print_rate),
         misc.Living(hp=200),
         misc.TextLabel(text="-TARGET-"),
     )
@@ -82,7 +82,7 @@ base.ecs_world.create_entity(
     movement.MovingMass(heading=90, mass=5000),
     misc.TakesDamage(),
     laser.LaserGun(),
-    movement.Msg(rate=0),
+    misc.Msg(rate=0),
     misc.Living(hp=200),
     misc.TextLabel(text="-new-"),
 )
@@ -90,8 +90,8 @@ base.ecs_world.create_entity(
 creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
 creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 
-for j in range(1, 5):
-    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=100 * j)
+for j in range(1, 5, 2):
+    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),

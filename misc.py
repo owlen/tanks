@@ -2,7 +2,7 @@ from direct.particles import ParticleEffect
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import KeyboardButton, Vec3, TextNode
 from wecs.core import Component, System, and_filter
-from wecs.panda3d import Model
+from wecs.panda3d import Model, Position
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
@@ -107,17 +107,33 @@ class LifeSystem(System):
 
     def update(self, entities_by_filter):
         for mortal in entities_by_filter['mortals']:
-            model = mortal[Model]
             living = mortal[Living]
             if living.accum_damage > 0:
                 living.hp -= living.accum_damage
-                # print(f"got {living.accum_damage} damage. HP:{living.hp}")
                 living.accum_damage = 0
-                # if living.hp < 0:  # entity is dead
-                #     living.alive = False
-                #     print("BOOM")
-                #     model.node.set_r(160)
-                #     model.node.set_z(2)
-                #     del mortal[Living]
             if TextLabel in mortal:
                 mortal[TextLabel].text = f"hp:{mortal[Living].hp}"
+
+
+@Component()
+class Msg:
+    msg: str = "."  # mass - Kg
+    rate: int = 30  # print every
+    rate_c: int = 0
+
+
+class PrintMsg(System):
+    entity_filters = {
+        'print': and_filter([
+            Position,
+            Msg,
+        ]),
+    }
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['print']:
+            if entity[Msg].rate < 1:
+                continue
+            entity[Msg].rate_c += 1
+            if entity[Msg].rate_c % entity[Msg].rate == 0:
+                print(f"msg:{entity}, {entity[Msg].msg}")

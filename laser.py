@@ -71,7 +71,6 @@ class LaserSystem(System):
         sphere_node.set_into_collide_mask(1)
         target_np = model.node.attach_new_node(sphere_node)
         target_np.set_python_tag('live', entity[Living])
-        target_np.show()
         entity[TakesDamage].target_np = target_np
 
     def exit_filter_targets(self, entity):
