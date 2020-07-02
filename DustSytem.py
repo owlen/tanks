@@ -50,4 +50,3 @@ class DustSystem(System):
             elif moving.velocity > 3:
                 # duster.particle_mgr.enable()
                 duster.particle_mgr.start(parent=entity[Model].node, renderParent=game.render)
-
