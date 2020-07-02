@@ -1,12 +1,13 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4, CollisionSegment, CollisionNode, \
-    CollisionSphere
+    CollisionSphere, KeyboardButton
 from wecs.core import System, and_filter, Component
 from wecs.panda3d import Model
 
 import game
-from misc import TakesDamage, Living, LASER_KEY
+from misc import TakesDamage, Living
 
+LASER_KEY = KeyboardButton.ascii_key('l')
 
 @Component()
 class LaserGun:

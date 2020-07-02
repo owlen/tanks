@@ -4,7 +4,7 @@ from panda3d.core import KeyboardButton, Vec3, TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model, Position, sqrt
 
-LASER_KEY = KeyboardButton.ascii_key('l')
+ZOOM_KEY = KeyboardButton.ascii_key('z')
 
 
 @Component()
@@ -27,12 +27,19 @@ class CameraSystem(System):
             if abs(x) > 0.7:
                 camera.set_pos(camera, 20 * x * globalClock.dt, 0, 0)
                 camera.lookAt(look_at)
-            if abs(y) > 0.7:
+            if abs(y) > 0.7 and camera.get_p() > -85:
                 camera.set_pos(camera, 0, 0, 25 * y * globalClock.dt)
                 if camera.get_z() < 1:
                     camera.set_z(1)
 
                 camera.lookAt(0, 0, -10)
+
+        if base.mouseWatcherNode.is_button_down(ZOOM_KEY):
+            zoom = base.camLens.get_fov()[0]
+            if zoom == 40:
+                base.camLens.set_fov(70)
+            else:
+                base.camLens.set_fov(40)
 
 
 @Component()
