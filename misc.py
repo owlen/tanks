@@ -1,8 +1,8 @@
-from direct.particles import ParticleEffect
+from direct.particles.ParticleEffect import ParticleEffect
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import KeyboardButton, Vec3, TextNode
 from wecs.core import Component, System, and_filter
-from wecs.panda3d import Model, Position
+from wecs.panda3d import Model, Position, sqrt
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
@@ -45,9 +45,21 @@ class SmokeSystem(System):
         'smokers': and_filter([Smoking, Model])
     }
 
+    def enter_filter_smokers(self, entity):
+        model = entity[Model]
+
+        p = ParticleEffect()
+        p.loadConfig('resources/smoke.ptf')
+        p.start(parent=model.node, renderParent=render)
+        p.set_z(3)
+        # p0 = p.getParticlesList()[0]
+        # p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 3.0000))
+        entity[Smoking].particle_mgr = p
+
     def update(self, entities_by_filter):
         for entity in entities_by_filter['smokers']:
-            print(f"smoke:{entity}")
+            if Living in entity:
+                entity[Smoking].rate = 10 - sqrt(entity[Living].hp)  # todo do something w this
 
 
 @Component()
