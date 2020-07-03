@@ -60,7 +60,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
 base.ecs_world.create_entity(
     turret.Turret(rotate_speed=45),
     panda3d.Model(),
-    panda3d.Geometry(file="resources/ground_turret4.bam"),
+    panda3d.Geometry(file="resources/ground_turret.bam"),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(0, 0, 0)),
     misc.TakesDamage(sphere_size=1),
