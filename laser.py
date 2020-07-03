@@ -11,11 +11,12 @@ LASER_KEY = KeyboardButton.ascii_key('l')
 
 @Component()
 class LaserGun:
-    range: int = 30
-    fire_time: int = None
-    laser_node_path = None
-    ray_np = None
+    range: int = 5
+    nozzle_length: int = 4
     damage: int = 2
+    fire_time: int = None
+    ray_np = None
+    laser_np = None
 
 
 class LaserSystem(System):
@@ -33,33 +34,34 @@ class LaserSystem(System):
 
     def enter_filter_guns(self, entity):
         model = entity[Model]
-        model.node.set_hpr(0, 0, 0)
+        laser_gun = entity[LaserGun]
 
         # create green laser line
         segs = LineSegs()
         segs.set_thickness(2.0)
         segs.set_color(VBase4(.6, 1, .1, 1))
-        segs.move_to(0, 2, 2)
-        segs.draw_to(0, 40, 1)
-        entity[LaserGun].laser_node_path = model.node.attach_new_node(segs.create())
-        entity[LaserGun].laser_node_path.hide()
+        segs.move_to(0, laser_gun.nozzle_length, 2)
+        segs.draw_to(0, laser_gun.range, 1)
+        laser_gun.laser_np = model.node.attach_new_node(segs.create())
+        laser_gun.laser_np.hide()
 
         # Make a ray with length as "from" collider
-        ray = CollisionSegment((0, 5, 1), (0, 70, 0))
+        ray = CollisionSegment((0, laser_gun.nozzle_length, 1), (0, laser_gun.range, 0))
         ray_node = CollisionNode("RAY")
         ray_node.add_solid(ray)
         ray_node.set_from_collide_mask(1)
         ray_node.set_into_collide_mask(0)
         ray_np = model.node.attach_new_node(ray_node)
-        ray_np.set_python_tag("damage", entity[LaserGun].damage)
+        ray_np.set_python_tag("damage", laser_gun.damage)
         ray_np.show()
         self.traverser.add_collider(ray_np, self.queue)
-        entity[LaserGun].ray_np = ray_np
+        laser_gun.ray_np = ray_np
 
     def exit_filter_guns(self, entity):
-        ray_np = entity[LaserGun].ray_np
-        ray_np.hide()
-        self.traverser.removeCollider(ray_np)
+        laser_gun = entity[LaserGun]
+        laser_gun.ray_np.hide()
+        laser_gun.laser_np.hide()
+        self.traverser.removeCollider(laser_gun.ray_np)
 
     def enter_filter_targets(self, entity):
         model = entity[Model]
@@ -95,7 +97,7 @@ class LaserSystem(System):
                     laser_gun.fire_time = globalClock.getRealTime()
                 else:
                     return
-            laser_gun.laser_node_path.show()
+            laser_gun.laser_np.show()
             if globalClock.getRealTime() - laser_gun.fire_time > self.duration:
-                laser_gun.laser_node_path.hide()
+                laser_gun.laser_np.hide()
                 laser_gun.fire_time = None

@@ -9,6 +9,7 @@ import laser
 import misc
 import movement
 import tank
+import turret
 
 system_types = [
     # Attach the entity's Model. This gives an entity a node as
@@ -16,19 +17,18 @@ system_types = [
     panda3d.SetupModels,
     # Attach Geometry to the Model's node.
     panda3d.ManageGeometry,
-    # Read player input and store it on Movement
-    tank.GiveTankMoveCommands,
-    # New moving system
-    movement.MoveMassSystem,
-    DustSytem.DustSystem,
-    # tank.TankTouchesBoundary,
-    misc.PrintMsg,
-    laser.LaserSystem,
     misc.SmokeSystem,
     misc.LifeSystem,
     misc.CameraSystem,
     misc.TextLabelSystem,
+    misc.PrintMsg,
+    movement.MoveMassSystem,
+    tank.GiveTankMoveCommands,
+    DustSytem.DustSystem,
+    turret.OperateTurrets,
+    laser.LaserSystem,
     tank.HandleTankDestruction,
+    turret.HandleTurretDestruction,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -49,12 +49,26 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         wp3d.Position(value=Vec3(x, y, 0)),
         movement.MovingMass(heading=angle, mass=mass, turn=turn),
         DustSytem.Duster(),
-        laser.LaserGun(),
+        laser.LaserGun(nozzle_length=5, range=50),
         misc.TakesDamage(sphere_size=3),
         misc.Msg(rate=print_rate),
         misc.Living(),
         misc.TextLabel(text="-TANK-"),
     )
+
+
+base.ecs_world.create_entity(
+    turret.Turret(rotate_speed=45),
+    panda3d.Model(),
+    panda3d.Geometry(file="resources/ground_turret4.bam"),
+    panda3d.Scene(node=base.render),
+    panda3d.Position(value=Vec3(0, 0, 0)),
+    misc.TakesDamage(sphere_size=1),
+    laser.LaserGun(damage=1, nozzle_length=2, range=20),
+    misc.Msg(rate=0),
+    misc.Living(hp=30),
+    misc.TextLabel(text="-new-"),
+)
 
 
 # noinspection PyUnusedLocal
@@ -74,25 +88,25 @@ def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", 
     )
 
 
-base.ecs_world.create_entity(
-    tank.Tank(),
-    panda3d.Model(),
-    panda3d.Geometry(file="resources/tank.bam"),
-    panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(0, 40, 0)),
-    movement.MovingMass(heading=90, mass=5000),
-    misc.TakesDamage(),
-    laser.LaserGun(),
-    misc.Msg(rate=0),
-    misc.Living(hp=200),
-    misc.TextLabel(text="-new-"),
-)
+# base.ecs_world.create_entity(
+#     tank.Tank(),
+#     panda3d.Model(),
+#     panda3d.Geometry(file="resources/tank.bam"),
+#     panda3d.Scene(node=base.render),
+#     panda3d.Position(value=Vec3(0, 40, 0)),
+#     movement.MovingMass(heading=90, mass=5000),
+#     misc.TakesDamage(),
+#     laser.LaserGun(),
+#     misc.Msg(rate=0),
+#     misc.Living(hp=200),
+#     misc.TextLabel(text="-new-"),
+# )
 
-creat_tank(x=20, y=-30, angle=0, mass=500, print_rate=120)
+creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
 creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 
-for j in range(1, 5, 2):
-    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
+# for j in range(1, 5, 2):
+#     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),

@@ -15,7 +15,6 @@ THROTTLE_DOWN_KEY = KeyboardButton.ascii_key('-')
 
 @Component()
 class Tank:
-    # size: float = 0.2
     weight: int = 1
 
 
@@ -57,22 +56,6 @@ class GiveTankMoveCommands(System):
                 entity[MovingMass].break_force = 10000
             else:
                 entity[MovingMass].break_force = 0
-
-
-class TankTouchesBoundary(System):
-    entity_filters = {
-        'tanks': and_filter([MovingMass, Tank])
-    }
-
-    arena_radius = 50
-
-    def update(self, entities_by_filter):
-        for entity in set(entities_by_filter['tanks']):
-
-            distance = entity[Model].node.getPos().length()
-
-            if distance > self.arena_radius:
-                print(f"  out  {entity} distance: {distance}")
 
 
 class HandleTankDestruction(System):
