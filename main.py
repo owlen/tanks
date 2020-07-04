@@ -6,6 +6,7 @@ loadPrcFileData("", "win-origin 1000 400")
 loadPrcFileData("", "window-title TANKS")
 loadPrcFileData("", "audio-library-name null")
 loadPrcFileData("", "show-frame-rate-meter true")
+# loadPrcFileData("", "win-size 600 400")
 
 from wecs import boilerplate
 

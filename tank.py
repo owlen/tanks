@@ -31,22 +31,6 @@ class GiveTankMoveCommands(System):
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['tanks']:
-            if entity[Living].hp < 0:
-                continue
-
-            # What keys does the player use?
-            up_key = KeyboardButton.ascii_key(b'w')
-            down_key = KeyboardButton.ascii_key(b's')
-
-            # Read player input
-            delta = 0
-            if game.base.mouseWatcherNode.is_button_down(up_key):
-                delta += 1
-            if game.base.mouseWatcherNode.is_button_down(down_key):
-                delta -= 1
-
-            # Store movement
-            # movement.value.y = delta
 
             if game.base.mouseWatcherNode.is_button_down(THROTTLE_UP_KEY):
                 entity[MovingMass].forward_force = min(4000, entity[MovingMass].forward_force + 100.0)
