@@ -1,10 +1,12 @@
 from direct.showbase.ShowBaseGlobal import globalClock
+from panda3d.core import KeyboardButton
 from wecs.core import Component
 from wecs.core import System
 from wecs.core import and_filter
-from wecs.panda3d import Model, sqrt
+from wecs.panda3d import Model
 from wecs.panda3d import Position
 
+import game
 from misc import Msg
 
 
@@ -12,8 +14,8 @@ from misc import Msg
 class MovingMass:
     mass: int  # mass - Kg
     heading: float = 0  # heading - degrees
-    min_turn_radius: int = 10  # how tight it can turn?
-    turn: int = 180 / (min_turn_radius * 3.1413)  # 3  # max turn ability - Degrees/m
+    min_turn_radius: int = 10  # how tight it can turn? max turn ability - Degrees/m
+    turn: int = 180 / (min_turn_radius * 3.1413)  # actual turning
     velocity: int = 1  # velocity - m/sec
     acceleration: float = 0  # m/sec**2
     forward_force = 1000  # force ??
@@ -45,18 +47,43 @@ class MoveMassSystem(System):
             # velocity grows by acceleration*dt, can't be negative
             moving_mass.acceleration = resultant_force / moving_mass.mass
             moving_mass.velocity = max(0, moving_mass.velocity + moving_mass.acceleration * dt)
-            entity[Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} " \
-                              f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
-                              f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
 
+            # limit turn rate
+            moving_mass.turn = min(moving_mass.turn, 180 / (moving_mass.min_turn_radius * 3.1413))
+            moving_mass.turn = max(moving_mass.turn, -180 / (moving_mass.min_turn_radius * 3.1413))
             # turn based on speed
             moving_mass.heading += moving_mass.turn * moving_mass.velocity * dt
             model.node.set_h(moving_mass.heading)
 
             model.node.set_pos(model.node, (0, moving_mass.velocity * dt, 0))
 
-            x = entity[Model].node.getX()
-            y = entity[Model].node.getY()
-            entity[Msg].msg += f" dis: {sqrt(x * x + y * y)}"
-
             entity[Position].value = entity[Model].node.getPos()
+
+            entity[Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} " \
+                              f"turn: {moving_mass.turn}"
+            # f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
+            # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
+
+
+@Component()
+class KbdControlled:
+    keys: str = 'ad '
+    turn_rate: int = 10
+
+
+class KbsControlSystem(System):
+    entity_filters = {"controlled": and_filter([KbdControlled, MovingMass])}
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['controlled']:
+            controlled = entity[KbdControlled]
+            moving = entity[MovingMass]
+            t = moving.turn
+            key_left, key_right, key_laser = controlled.keys
+            if t > -20 and game.base.mouseWatcherNode.is_button_down(KeyboardButton.ascii_key(key_right)):
+                print("left")
+                t -= controlled.turn_rate * globalClock.dt
+            if t < 20 and game.base.mouseWatcherNode.is_button_down(KeyboardButton.ascii_key(key_left)):
+                print("right")
+                t += controlled.turn_rate * globalClock.dt
+            moving.turn = t

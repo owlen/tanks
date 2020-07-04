@@ -6,7 +6,7 @@ from wecs.panda3d import Model
 import game
 from laser import LaserGun
 from misc import Living, TakesDamage, Smoking
-from movement import MovingMass
+from movement import MovingMass, KbdControlled
 
 BREAK_KEY = KeyboardButton.ascii_key('b')
 THROTTLE_UP_KEY = KeyboardButton.ascii_key('+')
@@ -57,6 +57,8 @@ class HandleTankDestruction(System):
                     del entity[LaserGun]
                 if TakesDamage in entity:
                     del entity[TakesDamage]
+                if KbdControlled in entity:
+                    del entity[KbdControlled]
                 if MovingMass in entity:  # fixme still doesn't stop
                     entity[MovingMass].friction *= 15
                     entity[MovingMass].turn /= 2

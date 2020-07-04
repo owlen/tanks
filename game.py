@@ -29,6 +29,7 @@ system_types = [
     laser.LaserSystem,
     tank.HandleTankDestruction,
     turret.HandleTurretDestruction,
+    movement.KbsControlSystem,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -93,20 +94,21 @@ base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file="resources/tank.bam"),
     panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(0, 40, 0)),
+    panda3d.Position(value=Vec3(0, -40, 0)),
     movement.MovingMass(heading=90, mass=5000),
     misc.TakesDamage(),
     laser.LaserGun(),
-    misc.Msg(rate=0),
+    misc.Msg(rate=10),
     misc.Living(hp=200),
     misc.TextLabel(text="-new-"),
+    movement.KbdControlled(),
 )
 
-creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
-creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
+# creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 
-for j in range(1, 5, 2):
-    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
+# for j in range(1, 5, 2):
+#     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
 
 circle = base.ecs_world.create_entity(
     panda3d.Model(),

@@ -11,7 +11,7 @@ LASER_KEY = KeyboardButton.ascii_key('l')
 
 @Component()
 class LaserGun:
-    range: int = 5
+    range: int = 15
     nozzle_length: int = 4
     damage: int = 2
     fire_time: int = None
