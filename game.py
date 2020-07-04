@@ -5,6 +5,7 @@ from panda3d.core import Vec3, CardMaker
 from wecs import panda3d
 
 import DustSytem
+import camera
 import laser
 import misc
 import movement
@@ -19,7 +20,7 @@ system_types = [
     panda3d.ManageGeometry,
     misc.SmokeSystem,
     misc.LifeSystem,
-    misc.CameraSystem,
+    camera.CameraSystem,
     misc.TextLabelSystem,
     misc.PrintMsg,
     movement.MoveMassSystem,
@@ -63,7 +64,7 @@ base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file="resources/ground_turret.bam"),
     panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(0, 0, 0)),
+    panda3d.Position(value=Vec3(20, 0, 0)),
     misc.TakesDamage(sphere_size=1),
     laser.LaserGun(damage=1, nozzle_length=2, range=20),
     misc.Msg(rate=0),
@@ -102,6 +103,7 @@ base.ecs_world.create_entity(
     misc.Living(hp=200),
     misc.TextLabel(text="-new-"),
     movement.KbdControlled(),
+    # camera.LookAt(),
 )
 
 # creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)

@@ -1,44 +1,7 @@
 from direct.particles.ParticleEffect import ParticleEffect
-from direct.showbase.ShowBaseGlobal import globalClock
-from panda3d.core import KeyboardButton, Vec3, TextNode
+from panda3d.core import TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model, Position, sqrt
-
-ZOOM_KEY = KeyboardButton.ascii_key('z')
-
-
-@Component()
-class LookAt:
-    look_at: Vec3 = Vec3(0, 0, 0)
-
-
-class CameraSystem(System):
-    entity_filters = {"lookat": and_filter([LookAt, ])}
-
-    def update(self, entities_by_filter):
-        look_at = Vec3(0, 0, -10)
-        for entity in entities_by_filter['lookat']:
-            print(f"lookat:{entity[LookAt]}")
-            look_at = entity[LookAt].look_at
-        camera = base.camera
-        if base.mouseWatcherNode.hasMouse():
-            x = base.mouseWatcherNode.getMouseX()
-            y = base.mouseWatcherNode.getMouseY()
-            if abs(x) > 0.7:
-                camera.set_pos(camera, 20 * x * globalClock.dt, 0, 0)
-                camera.lookAt(look_at)
-            if abs(y) > 0.7 and camera.get_p() > -85:
-                camera.set_pos(camera, 0, 0, 25 * y * globalClock.dt)
-                if camera.get_z() < 1:
-                    camera.set_z(1)
-
-                camera.lookAt(0, 0, -10)
-
-        if base.mouseWatcherNode.is_button_down(ZOOM_KEY):
-            zoom = base.camLens.get_fov()[0] + 5 * globalClock.dt
-            if zoom > 70:
-                zoom = 40
-            base.camLens.set_fov(zoom)
 
 
 @Component()
