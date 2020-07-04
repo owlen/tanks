@@ -35,11 +35,10 @@ class CameraSystem(System):
                 camera.lookAt(0, 0, -10)
 
         if base.mouseWatcherNode.is_button_down(ZOOM_KEY):
-            zoom = base.camLens.get_fov()[0]
-            if zoom == 40:
-                base.camLens.set_fov(70)
-            else:
-                base.camLens.set_fov(40)
+            zoom = base.camLens.get_fov()[0] + 5 * globalClock.dt
+            if zoom > 70:
+                zoom = 40
+            base.camLens.set_fov(zoom)
 
 
 @Component()
@@ -143,10 +142,7 @@ class Msg:
 
 class PrintMsg(System):
     entity_filters = {
-        'print': and_filter([
-            Position,
-            Msg,
-        ]),
+        'print': and_filter([Position, Msg, ]),
     }
 
     def update(self, entities_by_filter):
