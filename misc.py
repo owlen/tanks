@@ -9,7 +9,7 @@ ZOOM_KEY = KeyboardButton.ascii_key('z')
 
 @Component()
 class LookAt:
-    look_at = Vec3(0, 0, 0)
+    look_at: Vec3 = Vec3(0, 0, 0)
 
 
 class CameraSystem(System):
