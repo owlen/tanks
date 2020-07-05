@@ -4,8 +4,9 @@ from wecs.core import System
 from wecs.panda3d import Model
 
 import game
+from DustSytem import Smoking
 from laser import LaserGun
-from misc import Living, TakesDamage, Smoking
+from misc import Living, TakesDamage
 from movement import MovingMass, KbdControlled
 
 BREAK_KEY = KeyboardButton.ascii_key('b')

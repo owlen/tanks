@@ -3,6 +3,8 @@ from panda3d.core import Vec3, KeyboardButton
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
+import game
+
 ZOOM_IN_KEY = KeyboardButton.ascii_key('z')
 ZOOM_OUT_KEY = KeyboardButton.ascii_key('x')
 LOOK_AT_KEY = KeyboardButton.ascii_key('1')
@@ -27,7 +29,8 @@ class CameraSystem(System):
             following = True
             break
 
-        camera = base.camera
+        base = game.base
+        camera = game.base.camera
         if base.mouseWatcherNode.hasMouse():
             x = base.mouseWatcherNode.getMouseX()
             y = base.mouseWatcherNode.getMouseY()

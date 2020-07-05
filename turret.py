@@ -2,8 +2,9 @@ from direct.showbase.ShowBaseGlobal import globalClock
 from wecs.core import and_filter, System, Component
 from wecs.panda3d import Model
 
+from DustSytem import Smoking
 from laser import LaserGun
-from misc import Living, Smoking, TakesDamage
+from misc import Living, TakesDamage
 
 
 @Component()

@@ -1,34 +1,6 @@
-from direct.particles.ParticleEffect import ParticleEffect
 from panda3d.core import TextNode
 from wecs.core import Component, System, and_filter
-from wecs.panda3d import Model, Position, sqrt
-
-
-@Component()
-class Smoking:
-    particle_mgr: ParticleEffect = None
-
-
-class SmokeSystem(System):
-    entity_filters = {
-        'smokers': and_filter([Smoking, Model])
-    }
-
-    def enter_filter_smokers(self, entity):
-        model = entity[Model]
-
-        p = ParticleEffect()
-        p.loadConfig('resources/smoke.ptf')
-        p.start(parent=model.node, renderParent=render)
-        p.set_z(3)
-        # p0 = p.getParticlesList()[0]
-        # p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 3.0000))
-        entity[Smoking].particle_mgr = p
-
-    def update(self, entities_by_filter):
-        for entity in entities_by_filter['smokers']:
-            if Living in entity:
-                entity[Smoking].rate = 10 - sqrt(entity[Living].hp)  # todo do something w this
+from wecs.panda3d import Model, Position
 
 
 @Component()
