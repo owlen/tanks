@@ -5,6 +5,18 @@ from wecs.panda3d import Model, Position, sqrt
 
 
 @Component()
+class Unit:
+    mass: int  # mass - Kg
+    temp: int = 20  # degrees celsius
+
+
+class HeatSystem(System):
+    entity_filters = {
+        'units': and_filter([Unit])
+    }
+
+
+@Component()
 class Smoking:
     particle_mgr: ParticleEffect = None
 

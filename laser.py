@@ -9,6 +9,7 @@ from misc import TakesDamage, Living
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
+
 @Component()
 class LaserGun:
     range: int = 15

@@ -7,12 +7,11 @@ from wecs.panda3d import Model
 from wecs.panda3d import Position
 
 import game
-from misc import Msg
+from misc import Msg, Unit
 
 
 @Component()
 class MovingMass:
-    mass: int  # mass - Kg
     heading: float = 0  # heading - degrees
     min_turn_radius: int = 10  # how tight it can turn? max turn ability - Degrees/m
     turn: int = 180 / (min_turn_radius * 3.1413)  # actual turning
@@ -37,6 +36,7 @@ class MoveMassSystem(System):
         for entity in entities_by_filter['move']:
             moving_mass = entity[MovingMass]
             model = entity[Model]
+            mass = entity[Unit].mass
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2
@@ -45,7 +45,7 @@ class MoveMassSystem(System):
             resultant_force = \
                 moving_mass.forward_force - air_resistance - moving_mass.friction - moving_mass.break_force
             # velocity grows by acceleration*dt, can't be negative
-            moving_mass.acceleration = resultant_force / moving_mass.mass
+            moving_mass.acceleration = resultant_force / mass
             moving_mass.velocity = max(0, moving_mass.velocity + moving_mass.acceleration * dt)
 
             # limit turn rate
@@ -59,10 +59,10 @@ class MoveMassSystem(System):
 
             entity[Position].value = entity[Model].node.getPos()
 
-            entity[Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} " \
+            entity[Msg].msg = f"Weight:{mass:>4} speed:{moving_mass.velocity: >6.2f} " \
                               f"turn: {moving_mass.turn}"
             # f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
-            # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
+            # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * mass}"
 
 
 @Component()
