@@ -1,19 +1,35 @@
 from direct.particles.ParticleEffect import ParticleEffect
+from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model, Position, sqrt
 
 
 @Component()
-class Unit:
+class Platform:
+    """
+    Has mass and temperature.
+    """
     mass: int  # mass - Kg
     temp: int = 20  # degrees celsius
 
 
-class HeatSystem(System):
-    entity_filters = {
-        'units': and_filter([Unit])
-    }
+class HeatSystem:
+    def exchange_heat(self, component):
+        """
+        exchange heat between component and it's platform.
+        :param component:
+        :return:
+        """
+        comp_jouls = component.mass * component.temp
+        plat_jouls = component.platform.mass * component.platform.temp
+        total_jouls = comp_jouls + plat_jouls
+        total_mass = component.mass + component.platform.mass
+        target_comp_jouls = total_jouls / total_mass * component.mass
+        exchange_rate_factor = 0.2 * globalClock.dt
+        delta_jouils = (target_comp_jouls - comp_jouls) * exchange_rate_factor
+        component.temp = component.temp + delta_jouils / component.mass
+        component.platform.temp = component.platform.temp - delta_jouils / component.platform.mass
 
 
 @Component()
@@ -105,7 +121,7 @@ class LifeSystem(System):
                 living.hp -= living.accum_damage
                 living.accum_damage = 0
             if TextLabel in mortal:
-                mortal[TextLabel].text = f"hp:{mortal[Living].hp}"
+                mortal[TextLabel].text = f"hp:{mortal[Living].hp} t:{mortal[Platform].temp:.1f}"
 
 
 @Component()

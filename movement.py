@@ -7,7 +7,7 @@ from wecs.panda3d import Model
 from wecs.panda3d import Position
 
 import game
-from misc import Msg, Unit
+from misc import Msg, Platform
 
 
 @Component()
@@ -36,7 +36,7 @@ class MoveMassSystem(System):
         for entity in entities_by_filter['move']:
             moving_mass = entity[MovingMass]
             model = entity[Model]
-            mass = entity[Unit].mass
+            mass = entity[Platform].mass
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2
@@ -59,7 +59,7 @@ class MoveMassSystem(System):
 
             entity[Position].value = entity[Model].node.getPos()
 
-            entity[Msg].msg = f"Weight:{mass:>4} speed:{moving_mass.velocity: >6.2f} " \
+            entity[Msg].msg = f"Weight:{mass:>4} temp:{entity[Platform].temp} speed:{moving_mass.velocity: >6.2f} " \
                               f"turn: {moving_mass.turn}"
             # f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
             # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * mass}"
