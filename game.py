@@ -52,7 +52,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         wp3d.Position(value=Vec3(x, y, 0)),
         misc.Platform(mass=mass),
         movement.MovingMass(heading=angle, turn=turn),
-        # DustSytem.Duster(),
+        # DustSystem.Duster(),
         laser.LaserGun(nozzle_length=5, range=50),
         misc.TakesDamage(sphere_size=3),
         misc.Msg(rate=print_rate),

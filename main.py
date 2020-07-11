@@ -8,6 +8,7 @@ loadPrcFileData("", "audio-library-name null")
 loadPrcFileData("", "show-frame-rate-meter true")
 # loadPrcFileData("", "win-size 600 400")
 
+# noinspection PyPep8
 from wecs import boilerplate
 
 

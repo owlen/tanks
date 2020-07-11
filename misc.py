@@ -15,21 +15,26 @@ class Platform:
 
 
 class HeatSystem:
+    HEAT_EXCHANGE_FACTOR = 0.2
+
     def exchange_heat(self, component):
         """
-        exchange heat between component and it's platform.
-        :param component:
-        :return:
+        Exchange heat between component and it's platform, by calculating total joules
+        in between them, and moving the energy between them.
         """
-        comp_jouls = component.mass * component.temp
-        plat_jouls = component.platform.mass * component.platform.temp
-        total_jouls = comp_jouls + plat_jouls
+        # Calculate total joules in both component and platform
+        comp_joules = component.mass * component.temp
+        plat_joules = component.platform.mass * component.platform.temp
+        total_joules = comp_joules + plat_joules
         total_mass = component.mass + component.platform.mass
-        target_comp_jouls = total_jouls / total_mass * component.mass
-        exchange_rate_factor = 0.2 * globalClock.dt
-        delta_jouils = (target_comp_jouls - comp_jouls) * exchange_rate_factor
-        component.temp = component.temp + delta_jouils / component.mass
-        component.platform.temp = component.platform.temp - delta_jouils / component.platform.mass
+        # target is the "final" temp for component after infinity time
+        target_comp_joules = total_joules / total_mass * component.mass
+        exchange_rate_factor = self.HEAT_EXCHANGE_FACTOR * globalClock.dt
+        # amount of heat to move from comp to platform
+        delta_joules = (target_comp_joules - comp_joules) * exchange_rate_factor
+        # update component and platform temps
+        component.temp = component.temp + delta_joules / component.mass
+        component.platform.temp = component.platform.temp - delta_joules / component.platform.mass
 
 
 @Component()
