@@ -17,6 +17,8 @@ class HeatSystem(System):
     }
 
     HEAT_EXCHANGE_FACTOR = 0.2
+    ENV_TEMP = 20  # deg celsius
+    ENV_HEAT_LOSS = 1000  # kcal
 
     def enter_filter_platform(self, entity):
         print(f"Enter HEAT {entity[Platform]}")
@@ -27,6 +29,12 @@ class HeatSystem(System):
                 total_mass += c.mass
         print(f"total_mass: {total_mass}")
         entity[Platform].mass = total_mass
+
+    def update(self, entities_by_filter):
+        for entity in entities_by_filter['platform']:
+            if entity[Platform].temp > self.ENV_TEMP:
+                entity[Platform].temp -= (self.ENV_HEAT_LOSS / entity[
+                    Platform].mass) * self.HEAT_EXCHANGE_FACTOR * globalClock.dt
 
     def exchange_heat(self, component):
         """
