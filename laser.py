@@ -5,7 +5,8 @@ from wecs.core import System, and_filter, Component
 from wecs.panda3d import Model
 
 import game
-from misc import TakesDamage, Living
+from heat import Platform, HeatSystem
+from misc import TakesDamage, Living, Msg
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
@@ -18,9 +19,12 @@ class LaserGun:
     fire_time: int = None
     ray_np = None
     laser_np = None
+    temp: int = 50
+    mass: int = 100
+    platform = None
 
 
-class LaserSystem(System):
+class LaserSystem(HeatSystem, System):
     entity_filters = {
         'targets': and_filter([TakesDamage, Model, TakesDamage, Living]),
         'guns': and_filter([LaserGun, Model, Living]),
@@ -36,6 +40,7 @@ class LaserSystem(System):
     def enter_filter_guns(self, entity):
         model = entity[Model]
         laser_gun = entity[LaserGun]
+        laser_gun.platform = entity[Platform]  # connect to host platform
 
         # create green laser line
         segs = LineSegs()
@@ -92,12 +97,15 @@ class LaserSystem(System):
 
         for gun in entities_by_filter['guns']:
             laser_gun = gun[LaserGun]
+            gun[Msg].msg += f" gun temp:{laser_gun.temp}"
+
+            self.exchange_heat(laser_gun)
 
             if not laser_gun.fire_time:
                 if game.base.mouseWatcherNode.is_button_down(LASER_KEY):
                     laser_gun.fire_time = globalClock.getRealTime()
                 else:
-                    return
+                    continue
             laser_gun.laser_np.show()
             if globalClock.getRealTime() - laser_gun.fire_time > self.duration:
                 laser_gun.laser_np.hide()

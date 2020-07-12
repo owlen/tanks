@@ -7,12 +7,12 @@ from wecs.panda3d import Model
 from wecs.panda3d import Position
 
 import game
+from heat import Platform
 from misc import Msg
 
 
 @Component()
-class MovingMass:
-    mass: int  # mass - Kg
+class Propulsion:
     heading: float = 0  # heading - degrees
     min_turn_radius: int = 10  # how tight it can turn? max turn ability - Degrees/m
     turn: int = 180 / (min_turn_radius * 3.1413)  # actual turning
@@ -23,20 +23,22 @@ class MovingMass:
     friction = 100  # force
 
 
-class MoveMassSystem(System):
+class PropulsionSystem(System):
     entity_filters = {
-        'move': and_filter([
+        'movers': and_filter([
             Position,
-            MovingMass,
+            Platform,
+            Propulsion,
             Msg,
         ]),
     }
 
     def update(self, entities_by_filter):
         dt = globalClock.dt
-        for entity in entities_by_filter['move']:
-            moving_mass = entity[MovingMass]
+        for entity in entities_by_filter['movers']:
+            moving_mass = entity[Propulsion]
             model = entity[Model]
+            mass = entity[Platform].mass  # connect to host platform
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2
@@ -45,7 +47,7 @@ class MoveMassSystem(System):
             resultant_force = \
                 moving_mass.forward_force - air_resistance - moving_mass.friction - moving_mass.break_force
             # velocity grows by acceleration*dt, can't be negative
-            moving_mass.acceleration = resultant_force / moving_mass.mass
+            moving_mass.acceleration = resultant_force / mass
             moving_mass.velocity = max(0, moving_mass.velocity + moving_mass.acceleration * dt)
 
             # limit turn rate
@@ -59,10 +61,10 @@ class MoveMassSystem(System):
 
             entity[Position].value = entity[Model].node.getPos()
 
-            entity[Msg].msg = f"Weight:{moving_mass.mass:>4} speed:{moving_mass.velocity: >6.2f} " \
+            entity[Msg].msg = f"Weight:{mass:>4} temp:{entity[Platform].temp} speed:{moving_mass.velocity: >6.2f} " \
                               f"turn: {moving_mass.turn}"
             # f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
-            # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * moving_mass.mass}"
+            # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * mass}"
 
 
 @Component()
@@ -72,12 +74,12 @@ class KbdControlled:
 
 
 class KbsControlSystem(System):
-    entity_filters = {"controlled": and_filter([KbdControlled, MovingMass])}
+    entity_filters = {"controlled": and_filter([KbdControlled, Propulsion])}
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['controlled']:
             controlled = entity[KbdControlled]
-            moving = entity[MovingMass]
+            moving = entity[Propulsion]
             t = moving.turn
             key_left, key_right, key_laser = controlled.keys
             if t > -20 and game.base.mouseWatcherNode.is_button_down(KeyboardButton.ascii_key(key_right)):

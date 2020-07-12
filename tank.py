@@ -6,8 +6,8 @@ from wecs.panda3d import Model
 import game
 from DustSytem import Smoking
 from laser import LaserGun
-from misc import Living, TakesDamage
-from movement import MovingMass, KbdControlled
+from misc import Living, TakesDamage, Smoking
+from propulsion import Propulsion, KbdControlled
 
 BREAK_KEY = KeyboardButton.ascii_key('b')
 THROTTLE_UP_KEY = KeyboardButton.ascii_key('+')
@@ -23,7 +23,7 @@ class GiveTankMoveCommands(System):
     entity_filters = {
         # 'tanks': Tank
 
-        'tanks': and_filter([MovingMass, Tank, Living]),
+        'tanks': and_filter([Propulsion, Tank, Living]),
     }
 
     def enter_filter_tanks(self, entity):
@@ -34,13 +34,13 @@ class GiveTankMoveCommands(System):
         for entity in entities_by_filter['tanks']:
 
             if game.base.mouseWatcherNode.is_button_down(THROTTLE_UP_KEY):
-                entity[MovingMass].forward_force = min(4000, entity[MovingMass].forward_force + 100.0)
+                entity[Propulsion].forward_force = min(4000, entity[Propulsion].forward_force + 100.0)
             if game.base.mouseWatcherNode.is_button_down(THROTTLE_DOWN_KEY):
-                entity[MovingMass].forward_force = max(0, entity[MovingMass].forward_force - 100.0)
+                entity[Propulsion].forward_force = max(0, entity[Propulsion].forward_force - 100.0)
             if game.base.mouseWatcherNode.is_button_down(BREAK_KEY):
-                entity[MovingMass].break_force = 10000
+                entity[Propulsion].break_force = 10000
             else:
-                entity[MovingMass].break_force = 0
+                entity[Propulsion].break_force = 0
 
 
 class HandleTankDestruction(System):
@@ -60,9 +60,9 @@ class HandleTankDestruction(System):
                     del entity[TakesDamage]
                 if KbdControlled in entity:
                     del entity[KbdControlled]
-                if MovingMass in entity:  # fixme still doesn't stop
-                    entity[MovingMass].friction *= 15
-                    entity[MovingMass].turn /= 2
-                    entity[MovingMass].velocity /= 2
+                if Propulsion in entity:  # fixme still doesn't stop
+                    entity[Propulsion].friction *= 15
+                    entity[Propulsion].turn /= 2
+                    entity[Propulsion].velocity /= 2
                 else:
                     print(f"{entity} is not MovingMass but alive?")
