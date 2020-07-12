@@ -96,7 +96,7 @@ class LaserSystem(HeatSystem, System):
 
         for gun in entities_by_filter['guns']:
             laser_gun = gun[LaserGun]
-            gun[Msg].msg = f"gun temp:{laser_gun.temp}"
+            gun[Msg].msg += f" gun temp:{laser_gun.temp}"
 
             self.exchange_heat(laser_gun)
 

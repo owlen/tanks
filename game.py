@@ -53,7 +53,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         misc.Platform(mass=mass),
         movement.MovingMass(heading=angle, turn=turn),
         # DustSystem.Duster(),
-        laser.LaserGun(nozzle_length=5, range=50),
+        laser.LaserGun(nozzle_length=5, range=20),
         misc.TakesDamage(sphere_size=3),
         misc.Msg(rate=print_rate),
         misc.Living(),
@@ -110,22 +110,22 @@ base.ecs_world.create_entity(
     panda3d.Geometry(file="resources/tank.bam"),
     panda3d.Scene(node=base.render),
     panda3d.Position(value=Vec3(0, -10, 0)),
-    misc.Platform(mass=2000),
+    misc.Platform(mass=3000),
     movement.MovingMass(heading=90),
     misc.TakesDamage(),
     laser.LaserGun(),
-    misc.Msg(rate=10),
+    misc.Msg(),
     misc.Living(hp=200),
     misc.TextLabel(text="-new-"),
     movement.KbdControlled(),
     # camera.LookAt(),
 )
 
-creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
-creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
-creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
-creat_tank(x=-30, y=-10, angle=0, mass=2000, print_rate=120)
-creat_tank(x=-0, y=-20, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
+# creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
+creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
+creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
 
 # for j in range(1, 5, 2):
 #     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
