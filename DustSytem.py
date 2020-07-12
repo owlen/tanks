@@ -6,6 +6,7 @@ from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
 import game
+from misc import Living
 from propulsion import Propulsion
 
 
