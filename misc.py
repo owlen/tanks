@@ -1,40 +1,9 @@
 from direct.particles.ParticleEffect import ParticleEffect
-from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model, Position, sqrt
 
-
-@Component()
-class Platform:
-    """
-    Has mass and temperature.
-    """
-    mass: int  # mass - Kg
-    temp: int = 20  # degrees celsius
-
-
-class HeatSystem:
-    HEAT_EXCHANGE_FACTOR = 0.2
-
-    def exchange_heat(self, component):
-        """
-        Exchange heat between component and it's platform, by calculating total joules
-        in between them, and moving the energy between them.
-        """
-        # Calculate total joules in both component and platform
-        comp_joules = component.mass * component.temp
-        plat_joules = component.platform.mass * component.platform.temp
-        total_joules = comp_joules + plat_joules
-        total_mass = component.mass + component.platform.mass
-        # target is the "final" temp for component after infinity time
-        target_comp_joules = total_joules / total_mass * component.mass
-        exchange_rate_factor = self.HEAT_EXCHANGE_FACTOR * globalClock.dt
-        # amount of heat to move from comp to platform
-        delta_joules = (target_comp_joules - comp_joules) * exchange_rate_factor
-        # update component and platform temps
-        component.temp = component.temp + delta_joules / component.mass
-        component.platform.temp = component.platform.temp - delta_joules / component.platform.mass
+from heat import Platform
 
 
 @Component()
@@ -117,7 +86,6 @@ class LifeSystem(System):
 
     def enter_filter_mortals(self, entity):
         mortal = entity[Living]
-        print(mortal)
 
     def update(self, entities_by_filter):
         for mortal in entities_by_filter['mortals']:

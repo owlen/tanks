@@ -5,7 +5,8 @@ from wecs.core import System, and_filter, Component
 from wecs.panda3d import Model
 
 import game
-from misc import TakesDamage, Living, HeatSystem, Platform, Msg
+from heat import Platform, HeatSystem
+from misc import TakesDamage, Living, Msg
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
@@ -39,7 +40,7 @@ class LaserSystem(HeatSystem, System):
     def enter_filter_guns(self, entity):
         model = entity[Model]
         laser_gun = entity[LaserGun]
-        laser_gun.platform = entity[Platform]
+        laser_gun.platform = entity[Platform]  # connect to host platform
 
         # create green laser line
         segs = LineSegs()

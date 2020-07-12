@@ -7,11 +7,12 @@ from wecs.panda3d import Model
 from wecs.panda3d import Position
 
 import game
-from misc import Msg, Platform
+from heat import Platform
+from misc import Msg
 
 
 @Component()
-class MovingMass:
+class Propulsion:
     heading: float = 0  # heading - degrees
     min_turn_radius: int = 10  # how tight it can turn? max turn ability - Degrees/m
     turn: int = 180 / (min_turn_radius * 3.1413)  # actual turning
@@ -22,21 +23,22 @@ class MovingMass:
     friction = 100  # force
 
 
-class MoveMassSystem(System):
+class PropulsionSystem(System):
     entity_filters = {
-        'move': and_filter([
+        'movers': and_filter([
             Position,
-            MovingMass,
+            Platform,
+            Propulsion,
             Msg,
         ]),
     }
 
     def update(self, entities_by_filter):
         dt = globalClock.dt
-        for entity in entities_by_filter['move']:
-            moving_mass = entity[MovingMass]
+        for entity in entities_by_filter['movers']:
+            moving_mass = entity[Propulsion]
             model = entity[Model]
-            mass = entity[Platform].mass
+            mass = entity[Platform].mass  # connect to host platform
 
             # air_resistance grow at speed^2 times aerodynamic_factor
             aerodynamic_factor = 2
@@ -72,12 +74,12 @@ class KbdControlled:
 
 
 class KbsControlSystem(System):
-    entity_filters = {"controlled": and_filter([KbdControlled, MovingMass])}
+    entity_filters = {"controlled": and_filter([KbdControlled, Propulsion])}
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['controlled']:
             controlled = entity[KbdControlled]
-            moving = entity[MovingMass]
+            moving = entity[Propulsion]
             t = moving.turn
             key_left, key_right, key_laser = controlled.keys
             if t > -20 and game.base.mouseWatcherNode.is_button_down(KeyboardButton.ascii_key(key_right)):
