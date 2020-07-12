@@ -83,9 +83,7 @@ class KbsControlSystem(System):
             t = moving.turn
             key_left, key_right, key_laser = controlled.keys
             if t > -20 and game.base.mouseWatcherNode.is_button_down(KeyboardButton.ascii_key(key_right)):
-                print("left")
                 t -= controlled.turn_rate * globalClock.dt
             if t < 20 and game.base.mouseWatcherNode.is_button_down(KeyboardButton.ascii_key(key_left)):
-                print("right")
                 t += controlled.turn_rate * globalClock.dt
             moving.turn = t
