@@ -6,6 +6,7 @@ from wecs import panda3d
 
 import DustSytem
 import camera
+import comm
 import heat
 import laser
 import misc
@@ -33,7 +34,7 @@ system_types = [
     laser.LaserSystem,
     tank.HandleTankDestruction,
     turret.HandleTurretDestruction,
-    misc.ReportSystem,
+    comm.ReportSystem,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -60,7 +61,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         misc.Msg(rate=print_rate),
         misc.Life(),
         misc.TextLabel(text="-TANK-"),
-        misc.Reporting(),
+        comm.Reporting(),
     )
     print(f"Created tank:{t}")
 
@@ -123,7 +124,7 @@ player = base.ecs_world.create_entity(
     misc.TextLabel(text="-new-"),
     propulsion.KbdControlled(),
     # camera.LookAt(),
-    misc.Reporting(),
+    comm.Reporting(),
 )
 
 print(f"created player: {player}")
