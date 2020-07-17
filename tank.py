@@ -6,7 +6,7 @@ from wecs.panda3d import Model
 import game
 from DustSytem import Smoking
 from laser import LaserGun
-from misc import Living, TakesDamage, Smoking
+from misc import Life, TakesDamage, Smoking
 from propulsion import Propulsion, KbdControlled
 
 BREAK_KEY = KeyboardButton.ascii_key('b')
@@ -23,7 +23,7 @@ class GiveTankMoveCommands(System):
     entity_filters = {
         # 'tanks': Tank
 
-        'tanks': and_filter([Propulsion, Tank, Living]),
+        'tanks': and_filter([Propulsion, Tank, Life]),
     }
 
     def enter_filter_tanks(self, entity):
@@ -44,16 +44,16 @@ class GiveTankMoveCommands(System):
 
 
 class HandleTankDestruction(System):
-    entity_filters = {'tanks': and_filter([Tank, Living])}
+    entity_filters = {'tanks': and_filter([Tank, Life])}
 
     def update(self, entities_by_filter):
         for entity in set(entities_by_filter['tanks']):
-            living = entity[Living]
+            living = entity[Life]
             if living.hp <= 0:
                 print(f"tank: {entity} is dead")
                 if Smoking not in entity:
                     entity[Smoking] = Smoking()
-                del entity[Living]
+                del entity[Life]
                 if LaserGun in entity:
                     del entity[LaserGun]
                 if TakesDamage in entity:

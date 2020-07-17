@@ -4,7 +4,7 @@ from wecs.panda3d import Model
 
 from DustSytem import Smoking
 from laser import LaserGun
-from misc import Living, TakesDamage
+from misc import Life, TakesDamage
 
 
 @Component()
@@ -14,7 +14,7 @@ class Turret:
 
 
 class OperateTurrets(System):
-    entity_filters = {'turrets': and_filter([Turret, Living, Model])}
+    entity_filters = {'turrets': and_filter([Turret, Life, Model])}
 
     def enter_filter_turrets(self, entity):
         model = entity[Model]
@@ -27,15 +27,15 @@ class OperateTurrets(System):
 
 
 class HandleTurretDestruction(System):
-    entity_filters = {'turrets': and_filter([Turret, Living])}
+    entity_filters = {'turrets': and_filter([Turret, Life])}
 
     def update(self, entities_by_filter):
         for entity in set(entities_by_filter['turrets']):
-            living = entity[Living]
+            living = entity[Life]
             if living.hp <= 0:
                 if Smoking not in entity:
                     entity[Smoking] = Smoking()
-                del entity[Living]
+                del entity[Life]
                 if LaserGun in entity:
                     del entity[LaserGun]
                 if TakesDamage in entity:

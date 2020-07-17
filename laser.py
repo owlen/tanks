@@ -6,7 +6,7 @@ from wecs.panda3d import Model
 
 import game
 from heat import Platform, HeatSystem
-from misc import TakesDamage, Living, Msg
+from misc import TakesDamage, Life, Msg
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
@@ -22,12 +22,14 @@ class LaserGun:
     temp: int = 50
     mass: int = 100
     platform = None
+    report_temp = None
+    report_mass = None
 
 
 class LaserSystem(HeatSystem, System):
     entity_filters = {
-        'targets': and_filter([TakesDamage, Model, TakesDamage, Living]),
-        'guns': and_filter([LaserGun, Model, Living]),
+        'targets': and_filter([TakesDamage, Model, TakesDamage, Life]),
+        'guns': and_filter([LaserGun, Model, Life]),
     }
     duration = 0.3
 
@@ -79,7 +81,7 @@ class LaserSystem(HeatSystem, System):
         sphere_node.add_solid(sphere)
         sphere_node.set_into_collide_mask(1)
         target_np = model.node.attach_new_node(sphere_node)
-        target_np.set_python_tag('live', entity[Living])
+        target_np.set_python_tag('live', entity[Life])
         entity[TakesDamage].target_np = target_np
 
     def exit_filter_targets(self, entity):

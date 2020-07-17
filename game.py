@@ -33,6 +33,7 @@ system_types = [
     laser.LaserSystem,
     tank.HandleTankDestruction,
     turret.HandleTurretDestruction,
+    misc.ReportSystem,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -44,7 +45,7 @@ render = builtins.render
 
 
 def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_rate=0, turn=3):
-    return base.ecs_world.create_entity(
+    t = base.ecs_world.create_entity(
         tank.Tank(),
         wp3d.UpdateBillboards(),
         wp3d.Model(),
@@ -57,9 +58,11 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         laser.LaserGun(nozzle_length=5, range=20),
         misc.TakesDamage(sphere_size=3),
         misc.Msg(rate=print_rate),
-        misc.Living(),
+        misc.Life(),
         misc.TextLabel(text="-TANK-"),
+        misc.Reporting(),
     )
+    print(f"Created tank:{t}")
 
 
 def create_turret(x, y):
@@ -73,7 +76,8 @@ def create_turret(x, y):
         misc.TakesDamage(sphere_size=1),
         laser.LaserGun(damage=1, nozzle_length=2, range=25, temp=100),
         misc.Msg(rate=0),
-        misc.Living(hp=30),
+        misc.Life(hp=30),
+        # misc.Reporting(),
         misc.TextLabel(text="-new-"),
     )
 
@@ -98,13 +102,13 @@ def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", 
         propulsion.Propulsion(heading=angle),
         misc.TakesDamage(),
         misc.Msg(rate=print_rate),
-        misc.Living(hp=200),
+        misc.Life(hp=200),
         misc.TextLabel(text="-TARGET-"),
     )
 
 
 # player
-base.ecs_world.create_entity(
+player = base.ecs_world.create_entity(
     tank.Tank(),
     panda3d.Model(),
     panda3d.Geometry(file="resources/tank.bam"),
@@ -115,21 +119,24 @@ base.ecs_world.create_entity(
     misc.TakesDamage(),
     laser.LaserGun(mass=500),
     misc.Msg(),
-    misc.Living(hp=200),
+    misc.Life(hp=200),
     misc.TextLabel(text="-new-"),
     propulsion.KbdControlled(),
     # camera.LookAt(),
+    misc.Reporting(),
 )
 
-# creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
-# creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
-# creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
-# creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
+print(f"created player: {player}")
+
+creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
+creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
+creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
 # creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
 
 # for j in range(1, 5, 2):
 #     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
-
+#
 circle = base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file='resources/circle.bam'),

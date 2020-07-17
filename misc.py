@@ -1,4 +1,7 @@
+import json
+
 from direct.particles.ParticleEffect import ParticleEffect
+from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model, Position, sqrt
@@ -29,8 +32,8 @@ class SmokeSystem(System):
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['smokers']:
-            if Living in entity:
-                entity[Smoking].rate = 10 - sqrt(entity[Living].hp)  # todo do something w this
+            if Life in entity:
+                entity[Smoking].rate = 10 - sqrt(entity[Life].hp)  # todo do something w this
 
 
 @Component()
@@ -51,10 +54,8 @@ class TextLabelSystem(System):
     }
 
     def enter_filter_labels(self, entity):
-        print(entity[TextLabel])
         model = entity[Model]
         text = entity[TextLabel].text
-        print(f"entered label. parent: {model}")
         entity[TextLabel].text_node = TextNode('text node')
         entity[TextLabel].text_node.setText(text)
         entity[TextLabel].text_node.setAlign(TextNode.ACenter)
@@ -73,28 +74,29 @@ class TextLabelSystem(System):
 
 
 @Component()
-class Living:
+class Life:
     hp: int = 100
     accum_damage: int = 0
     alive: bool = True
     is_alive = True
+    report_hp = None
 
 
 class LifeSystem(System):
     entity_filters = {
-        'mortals': and_filter([Living, Model])}
+        'mortals': and_filter([Life, Model])}
 
-    def enter_filter_mortals(self, entity):
-        mortal = entity[Living]
+    def enter_filter_mortals(self, entity):  # todo remove
+        mortal = entity[Life]
 
     def update(self, entities_by_filter):
         for mortal in entities_by_filter['mortals']:
-            living = mortal[Living]
+            living = mortal[Life]
             if living.accum_damage > 0:
                 living.hp -= living.accum_damage
                 living.accum_damage = 0
             if TextLabel in mortal:
-                mortal[TextLabel].text = f"hp:{mortal[Living].hp} t:{mortal[Platform].temp:.1f}"
+                mortal[TextLabel].text = f"hp:{mortal[Life].hp} t:{mortal[Platform].temp:.1f}"
 
 
 @Component()
@@ -116,3 +118,46 @@ class PrintMsg(System):
             entity[Msg].rate_c += 1
             if entity[Msg].rate_c % entity[Msg].rate == 0:
                 print(f"msg:{entity}, {entity[Msg].msg}")
+
+
+@Component()
+class Reporting:
+    repUnits = None
+
+
+class ReportSystem(System):
+    last_report_time = globalClock.get_frame_time()
+    frequency: int = 0.5  # seconds
+
+    entity_filters = {
+        'reporters': and_filter([Reporting, ])
+    }
+
+    def enter_filter_reporters(self, entity):
+        print(f"Enter REPORT {entity}   units: {entity[Reporting]}")
+        print(f"current repUnits:{entity[Reporting].repUnits}")
+        if entity[Reporting].repUnits is None:
+            entity[Reporting].repUnits = list()
+        for c in entity.get_components():
+            for v in dir(c):
+                if 'report_' in v:
+                    # print(f"comp {c.__class__.__name__} val:{v}")
+                    entity[Reporting].repUnits.append((c, v))
+        print(f"entered {entity[Reporting].repUnits}")
+
+    def update(self, entities_by_filter):
+        if self.last_report_time + self.frequency > globalClock.get_frame_time():
+            return
+        report = []
+        for reporter in entities_by_filter['reporters']:
+            print(f"report for:{reporter}")
+            units_reports = []
+            for subUnit, k in reporter[Reporting].repUnits:
+                key = f"{subUnit.__class__.__name__}.{k[7:]}"
+                v = str(getattr(subUnit, k[7:], '-')).split('.')[0]
+                units_reports.append({key: v})
+            report.append({str(reporter): units_reports})
+        print(f"done: {json.dumps(report)}")
+
+        self.last_report_time = globalClock.get_frame_time()
+        print(self.last_report_time)

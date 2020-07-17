@@ -9,6 +9,7 @@ class Platform:
     """
     mass: int  # mass - Kg
     temp: int = 20  # degrees celsius
+    report_temp = None
 
 
 class HeatSystem(System):
@@ -21,13 +22,10 @@ class HeatSystem(System):
     ENV_HEAT_LOSS = 1000  # kcal
 
     def enter_filter_platform(self, entity):
-        print(f"Enter HEAT {entity[Platform]}")
         total_mass = 0
         for c in entity.get_components():
             if 'mass' in dir(c):
-                print(f"  {c.mass} {c}")
                 total_mass += c.mass
-        print(f"total_mass: {total_mass}")
         entity[Platform].mass = total_mass
 
     def update(self, entities_by_filter):

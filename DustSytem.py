@@ -6,7 +6,7 @@ from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model
 
 import game
-from misc import Living
+from misc import Life
 from propulsion import Propulsion
 
 
@@ -78,5 +78,5 @@ class SmokeSystem(System):
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['smokers']:
-            if Living in entity:
-                entity[Smoking].rate = 10 - sqrt(entity[Living].hp)  # todo do something w this
+            if Life in entity:
+                entity[Smoking].rate = 10 - sqrt(entity[Life].hp)  # todo do something w this
