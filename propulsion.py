@@ -55,14 +55,16 @@ class PropulsionSystem(System):
             moving_mass.turn = max(moving_mass.turn, -180 / (moving_mass.min_turn_radius * 3.1413))
             # turn based on speed
             moving_mass.heading += moving_mass.turn * moving_mass.velocity * dt
+            moving_mass.heading = moving_mass.heading % 360
             model.node.set_h(moving_mass.heading)
 
             model.node.set_pos(model.node, (0, moving_mass.velocity * dt, 0))
 
             entity[Position].value = entity[Model].node.getPos()
 
-            entity[Msg].msg = f"Weight:{mass:>4} temp:{entity[Platform].temp} speed:{moving_mass.velocity: >6.2f} " \
-                              f"turn: {moving_mass.turn}"
+            entity[Msg].msg = f"heading:{moving_mass.heading:>3.2f}"
+            # f"Weight:{mass:>4} temp:{entity[Platform].temp} speed:{moving_mass.velocity: >6.2f} " \
+            #                  f"turn: {moving_mass.turn} heading: {moving_mass.heading}"
             # f"accel:{moving_mass.acceleration:.2f} " f"force:{moving_mass.forward_force} " \
             # f"resultant_force:{resultant_force:.2f}  - {moving_mass.acceleration * mass}"
 

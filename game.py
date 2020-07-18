@@ -85,7 +85,7 @@ def create_turret(x, y):
     )
 
 
-# create_turret(20, 0)
+create_turret(20, 0)
 # create_turret(-20, 0)
 # create_turret(0, 20)
 # create_turret(0, -20)
@@ -130,7 +130,7 @@ player = base.ecs_world.create_entity(
 
 print(f"created player: {player}")
 
-creat_tank(x=-10, y=10, angle=0, mass=500, print_rate=120)
+creat_tank(x=0, y=10, angle=45, mass=500, print_rate=1200)
 # creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 # creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
 # creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)

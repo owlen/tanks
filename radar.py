@@ -1,10 +1,11 @@
 from panda3d.core import LPoint3f, Vec3
 from wecs.core import Component, and_filter
-from wecs.panda3d import Model, Position
+from wecs.panda3d import Model, Position, or_filter
 
 from heat import Platform
 from misc import SlowSystem
 from tank import Tank
+from turret import Turret
 
 
 @Component()
@@ -17,7 +18,8 @@ class FrontRadar:
     platform = None
     open_deg: int = 15  # range in degrees both left and right
     report_temp = None
-
+    sees = None
+    report_sees = None
 
 def deg(lp: LPoint3f, bp: LPoint3f):
     vec1 = Vec3(lp).normalized()
@@ -31,10 +33,10 @@ def heading(p1, p2):
     zero_heading = Vec3(0, 0, 0).forward()
     relative_vector = Vec3(p2 - p1).normalized()
     degrees = zero_heading.angle_deg(relative_vector)
-    if p2.x >= p1.x:
+    if p2.x <= p1.x:
         return degrees
     else:
-        return -degrees
+        return 360 - degrees
 
 
 class RadarSystem(SlowSystem):
@@ -42,7 +44,7 @@ class RadarSystem(SlowSystem):
     sees_at = {}
     entity_filters = {
         'radars': and_filter([FrontRadar, Platform, Model]),
-        'blippers': and_filter([Position, Tank]),
+        'blippers': and_filter([Position, or_filter(Tank, Turret)]),
     }
 
     def enter_filter_blippers(self, entity):
@@ -72,5 +74,9 @@ class RadarSystem(SlowSystem):
         for radar in entities_by_filter['radars']:
             rdr_pos = radar[Position].value
             rdr_heading = radar[Model].node.get_h()
+            radar[FrontRadar].sees = []
             for blipper, direction in self.sees_at[radar]:
-                print(f"radar ar {rdr_pos} heading:{rdr_heading} sees:{direction}")
+                # print(f"radar ar {rdr_pos} heading:{rdr_heading:.1f} sees:{direction:.1f} delta: {direction-rdr_heading:.1f}")
+                if abs(direction - rdr_heading) < radar[FrontRadar].open_deg:
+                    print(f"SEE!!! {blipper} distance:{rdr_pos - blipper[Position].value}")
+                radar[FrontRadar].sees.append(direction)

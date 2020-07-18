@@ -1,5 +1,3 @@
-import json
-
 from direct.showbase.ShowBaseGlobal import globalClock
 from wecs.core import Component, System, and_filter
 
@@ -34,14 +32,11 @@ class ReportSystem(System):
             return
         report = []
         for reporter in entities_by_filter['reporters']:
-            print(f"report for:{reporter}")
             units_reports = []
             for subUnit, k in reporter[Reporting].repUnits:
                 key = f"{subUnit.__class__.__name__}.{k[7:]}"
                 v = str(getattr(subUnit, k[7:], '-')).split('.')[0]
                 units_reports.append({key: v})
             report.append({str(reporter): units_reports})
-        print(f"done: {json.dumps(report)}")
 
         self.last_report_time = globalClock.get_frame_time()
-        print(self.last_report_time)
