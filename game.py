@@ -114,12 +114,12 @@ player = base.ecs_world.create_entity(
     panda3d.Model(),
     panda3d.Geometry(file="resources/tank.bam"),
     panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(20, -20, 0)),
+    panda3d.Position(value=Vec3(20, -50, 0)),
     heat.Platform(mass=1111),
-    propulsion.Propulsion(heading=90),
+    propulsion.Propulsion(heading=45),
     misc.TakesDamage(),
     laser.LaserGun(mass=500),
-    misc.Msg(),
+    misc.Msg(rate=0),
     misc.Life(hp=200),
     misc.TextLabel(text="-new-"),
     propulsion.KbdControlled(),
@@ -130,7 +130,7 @@ player = base.ecs_world.create_entity(
 
 print(f"created player: {player}")
 
-creat_tank(x=0, y=10, angle=45, mass=500, print_rate=1200)
+# creat_tank(x=0, y=10, angle=45, mass=500, print_rate=0)
 # creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
 # creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
 # creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)

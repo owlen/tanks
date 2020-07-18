@@ -30,13 +30,10 @@ def deg(lp: LPoint3f, bp: LPoint3f):
 
 
 def heading(p1, p2):
-    zero_heading = Vec3(0, 0, 0).forward()
-    relative_vector = Vec3(p2 - p1).normalized()
-    degrees = zero_heading.angle_deg(relative_vector)
-    if p2.x <= p1.x:
-        return degrees
-    else:
-        return 360 - degrees
+    zero_heading = Vec3(0, 0, 0).forward().get_xy()
+    relative_vector = Vec3(p2 - p1).get_xy()
+    degrees = zero_heading.signed_angle_deg(relative_vector)
+    return degrees
 
 
 class RadarSystem(SlowSystem):
@@ -76,7 +73,11 @@ class RadarSystem(SlowSystem):
             rdr_heading = radar[Model].node.get_h()
             radar[FrontRadar].sees = []
             for blipper, direction in self.sees_at[radar]:
-                # print(f"radar ar {rdr_pos} heading:{rdr_heading:.1f} sees:{direction:.1f} delta: {direction-rdr_heading:.1f}")
-                if abs(direction - rdr_heading) < radar[FrontRadar].open_deg:
-                    print(f"SEE!!! {blipper} distance:{rdr_pos - blipper[Position].value}")
-                radar[FrontRadar].sees.append(direction)
+                delta = direction - rdr_heading
+                if delta > 180:
+                    delta = (360 - delta) % 360
+                print(f"radar ar {rdr_pos} heading:{rdr_heading:.1f} sees:{direction:.1f} delta: {delta:.1f}")
+                if abs(delta) < radar[FrontRadar].open_deg:
+                    distance = (rdr_pos - blipper[Position].value).length()
+                    print(f"SEE!!! {blipper} distance:{distance}")
+                    radar[FrontRadar].sees.append((direction, distance))
