@@ -11,6 +11,7 @@ import heat
 import laser
 import misc
 import propulsion
+import radar
 import tank
 import turret
 
@@ -35,6 +36,7 @@ system_types = [
     tank.HandleTankDestruction,
     turret.HandleTurretDestruction,
     comm.ReportSystem,
+    radar.RadarSystem,
 ]
 
 # noinspection PyUnresolvedReferences
@@ -61,7 +63,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         misc.Msg(rate=print_rate),
         misc.Life(),
         misc.TextLabel(text="-TANK-"),
-        comm.Reporting(),
+        # comm.Reporting(),
     )
     print(f"Created tank:{t}")
 
@@ -83,9 +85,7 @@ def create_turret(x, y):
     )
 
 
-create_turret(20, 0)
-
-
+# create_turret(20, 0)
 # create_turret(-20, 0)
 # create_turret(0, 20)
 # create_turret(0, -20)
@@ -125,14 +125,15 @@ player = base.ecs_world.create_entity(
     propulsion.KbdControlled(),
     # camera.LookAt(),
     comm.Reporting(),
+    radar.FrontRadar(),
 )
 
 print(f"created player: {player}")
 
-creat_tank(x=-20, y=-30, angle=0, mass=500, print_rate=120)
-creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
-creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
-creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
+creat_tank(x=-10, y=10, angle=0, mass=500, print_rate=120)
+# creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
 # creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
 
 # for j in range(1, 5, 2):

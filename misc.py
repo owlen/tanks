@@ -1,4 +1,5 @@
 from direct.particles.ParticleEffect import ParticleEffect
+from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import TextNode
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Model, Position, sqrt
@@ -117,3 +118,20 @@ class PrintMsg(System):
                 print(f"msg:{entity}, {entity[Msg].msg}")
 
 
+class SlowSystem(System):
+    last_update = globalClock.get_frame_time()
+    frequency: int = 0.5  # seconds
+
+    def __init__(self, frequency=None):
+        super().__init__()
+        if frequency:
+            self.frequency = frequency
+
+    def update(self, entities_by_filter):
+        if self.last_update + self.frequency > globalClock.get_frame_time():
+            return
+        self.last_update = globalClock.get_frame_time()
+        self.slow_update(entities_by_filter)
+
+    def slow_update(self, entities_by_filter):
+        pass

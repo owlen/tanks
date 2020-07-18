@@ -29,7 +29,7 @@ class LaserGun:
 class LaserSystem(HeatSystem, System):
     entity_filters = {
         'targets': and_filter([TakesDamage, Model, TakesDamage, Life]),
-        'guns': and_filter([LaserGun, Model, Life]),
+        'guns': and_filter([LaserGun, Model, Life, Platform]),
     }
     duration = 0.3
 
