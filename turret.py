@@ -16,9 +16,9 @@ class Turret:
 class OperateTurrets(System):
     entity_filters = {'turrets': and_filter([Turret, Life, Model])}
 
-    def enter_filter_turrets(self, entity):
-        model = entity[Model]
-        model.node.set_hpr(45, 45, 0)
+    # def enter_filter_turrets(self, entity):
+    #     model = entity[Model]
+    #     # model.node.set_hpr(45, 0, 0)
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['turrets']:

@@ -18,7 +18,7 @@ class FrontRadar:
     platform = None
     open_deg: int = 15  # range in degrees both left and right
     report_temp = None
-    sees = None
+    blips = None
     report_sees = None
 
 def deg(lp: LPoint3f, bp: LPoint3f):
@@ -36,48 +36,47 @@ def heading(p1, p2):
     return degrees
 
 
+def get_radar_info(scanner, blipper):
+    print(f"find data between {scanner} and {blipper}")
+    scanner_np = scanner[Model].node
+    blipper_np = blipper[Model].node
+    print(f"scanner: {scanner} pos:{scanner_np.get_pos()} heading:{scanner_np.get_h()}")
+    print(f"blipper: {blipper} pos:{blipper_np.get_pos()} heading:{blipper_np.get_h()}")
+    distance_to_blipper = scanner_np.get_distance(blipper_np)
+    xy = Vec3(0, 0, 0).forward().get_xy()
+    direction = (scanner_np.get_pos().get_xy() - blipper_np.get_pos().get_xy()).signed_angle_deg(xy)
+    print(f"direction: {scanner_np.get_h(blipper_np)} distance: {distance_to_blipper}")
+
+
 class RadarSystem(SlowSystem):
     blippers = []
-    sees_at = {}
+    blips_by_scanner = {}
     entity_filters = {
         'radars': and_filter([FrontRadar, Platform, Model]),
         'blippers': and_filter([Position, or_filter(Tank, Turret)]),
     }
 
-    def enter_filter_blippers(self, entity):
-        print(f"adding blipper: {entity}")
-        self.blippers.append(entity)
-
-        # for p in [(110, 10, 0), (90, 10, 0), (90, -10, 0), (110, -10, 0),
-        #           (100, 5, 0), (105, 0, 0), (95, 0, 0), (100, -5, 0), ]:
-        #     p1 = LPoint3f(100, 0, 0)
-        #     p2 = LPoint3f(p)
-        #     print(f"heading from (100, 0, 0) to {p}: {heading(p1, p2)} deg")
-        # exit()
-
     def slow_update(self, entities_by_filter):
-        # print(f"\nblippers: {self.blippers}")
-        for looker in self.blippers:
-            self.sees_at[looker] = []
-            for blipper in self.blippers:
-                if looker is blipper:
+        print(f"\nblippers: {entities_by_filter['blippers']}")
+        for scanner in entities_by_filter['radars']:
+            self.blips_by_scanner[scanner] = []
+            for blipper in entities_by_filter['blippers']:
+                if scanner is blipper:
                     continue
-                lp = looker[Position].value
-                bp = blipper[Position].value
-                direction = heading(lp, bp)
-                self.sees_at[looker].append((blipper, direction))
-        # print(self.sees_at)
+                self.blips_by_scanner[scanner].append(get_radar_info(scanner, blipper))
+        print(self.blips_by_scanner)
 
-        for radar in entities_by_filter['radars']:
-            rdr_pos = radar[Position].value
-            rdr_heading = radar[Model].node.get_h()
-            radar[FrontRadar].sees = []
-            for blipper, direction in self.sees_at[radar]:
-                delta = direction - rdr_heading
-                if delta > 180:
-                    delta = (360 - delta) % 360
-                print(f"radar ar {rdr_pos} heading:{rdr_heading:.1f} sees:{direction:.1f} delta: {delta:.1f}")
-                if abs(delta) < radar[FrontRadar].open_deg:
-                    distance = (rdr_pos - blipper[Position].value).length()
-                    print(f"SEE!!! {blipper} distance:{distance}")
-                    radar[FrontRadar].sees.append((direction, distance))
+        # for radar in entities_by_filter['radars']:
+        #     radar_node = radar[Model].node
+        #     rdr_pos = radar_node.get_pos()
+        #     rdr_heading = radar_node.get_h()
+        #     radar[FrontRadar].blips = []
+        #     for blipper, direction in self.blips_by_scanner[radar]:
+        #         delta = direction - rdr_heading
+        #         if delta > 180:
+        #             delta = (360 - delta) % 360
+        #         print(f"radar ar {rdr_pos} heading:{rdr_heading:.1f} sees:{direction:.1f} delta: {delta:.1f}")
+        #         if abs(delta) < radar[FrontRadar].open_deg:
+        #             distance = (rdr_pos - blipper[Position].value).length()
+        #             print(f"SEE!!! {blipper} distance:{distance}")
+        #             radar[FrontRadar].blips.append((direction, distance))

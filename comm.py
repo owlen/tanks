@@ -17,7 +17,7 @@ class ReportSystem(System):
 
     def enter_filter_reporters(self, entity):
         print(f"Enter REPORT {entity}   units: {entity[Reporting]}")
-        print(f"current repUnits:{entity[Reporting].repUnits}")
+        # print(f"current repUnits:{entity[Reporting].repUnits}")
         if entity[Reporting].repUnits is None:
             entity[Reporting].repUnits = list()
         for c in entity.get_components():
@@ -25,7 +25,7 @@ class ReportSystem(System):
                 if 'report_' in v:
                     # print(f"comp {c.__class__.__name__} val:{v}")
                     entity[Reporting].repUnits.append((c, v))
-        print(f"entered {entity[Reporting].repUnits}")
+        # print(f"entered {entity[Reporting].repUnits}")
 
     def update(self, entities_by_filter):
         if self.last_report_time + self.frequency > globalClock.get_frame_time():
