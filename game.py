@@ -70,7 +70,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
 
 def create_turret(x, y):
     base.ecs_world.create_entity(
-        turret.Turret(rotate_speed=0),
+        turret.Turret(rotate_speed=30),
         panda3d.Model(),
         panda3d.Geometry(file="resources/ground_turret.bam"),
         panda3d.Scene(node=base.render),
@@ -130,11 +130,11 @@ player = base.ecs_world.create_entity(
 
 print(f"created player: {player}")
 
-# creat_tank(x=0, y=10, angle=45, mass=500, print_rate=0)
-# creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
-# creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
-# creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
-# creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
+creat_tank(x=0, y=10, angle=45, mass=500, print_rate=0)
+creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
+creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
+creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
 
 # for j in range(1, 5, 2):
 #     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
