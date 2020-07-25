@@ -1,13 +1,13 @@
 from panda3d.core import KeyboardButton
-from wecs.core import Component, and_filter
-from wecs.core import System
-from wecs.panda3d import Model
 
 import game
 from DustSytem import Smoking
 from laser import LaserGun
 from misc import Life, TakesDamage, Smoking
 from propulsion import Propulsion, KbdControlled
+from wecs.core import Component, and_filter
+from wecs.core import System
+from wecs.panda3d.prototype import Model
 
 BREAK_KEY = KeyboardButton.ascii_key('b')
 THROTTLE_UP_KEY = KeyboardButton.ascii_key('+')

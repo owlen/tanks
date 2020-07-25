@@ -1,8 +1,6 @@
 import builtins
 
-import wecs.panda3d as wp3d
 from panda3d.core import Vec3, CardMaker
-from wecs import panda3d
 
 import DustSytem
 import camera
@@ -14,8 +12,19 @@ import propulsion
 import radar
 import tank
 import turret
+import wecs.panda3d as wp3d
+from wecs import panda3d
+from wecs.mechanics import clock
+from wecs.panda3d import prototype
+from wecs.panda3d.prototype import Model
 
 system_types = [
+
+    prototype.ManageModels,
+    clock.DetermineTimestep,
+    prototype.DeterminePhysicsTimestep,
+    prototype.DoPhysics,
+
     # Attach the entity's Model. This gives an entity a node as
     # presence in the scene graph.
     panda3d.SetupModels,
@@ -53,7 +62,7 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
         wp3d.UpdateBillboards(),
         wp3d.Model(),
         panda3d.Geometry(file),
-        wp3d.Scene(node=base.render),
+        # wp3d.Scene(node=base.render),
         wp3d.Position(value=Vec3(x, y, 0)),
         heat.Platform(mass=mass),
         propulsion.Propulsion(heading=angle, turn=turn),
@@ -71,10 +80,10 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
 def create_turret(x, y):
     base.ecs_world.create_entity(
         turret.Turret(rotate_speed=30),
-        panda3d.Model(),
-        panda3d.Geometry(file="resources/ground_turret.bam"),
-        panda3d.Scene(node=base.render),
-        panda3d.Position(value=Vec3(x, y, 0)),
+        prototype.Model(post_attach=prototype.transform(pos=Vec3(x, y, 0))),
+        prototype.Geometry(file='resources/ground_turret.bam'),
+        # panda3d.Scene(node=base.render),
+        # panda3d.Position(value=Vec3(x, y, 0)),
         heat.Platform(mass=500),
         misc.TakesDamage(sphere_size=1),
         laser.LaserGun(damage=1, nozzle_length=2, range=25, temp=100),
@@ -86,19 +95,17 @@ def create_turret(x, y):
 
 
 create_turret(20, 0)
-# create_turret(-20, 0)
-# create_turret(0, 20)
-# create_turret(0, -20)
+create_turret(-20, 0)
+create_turret(0, 20)
+create_turret(0, -20)
 
 
 # noinspection PyUnusedLocal
 def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", print_rate=0):
     return base.ecs_world.create_entity(
         tank.Tank(),
-        panda3d.Model(),
-        panda3d.Geometry(file),
-        panda3d.Scene(node=base.render),
-        panda3d.Position(value=Vec3(x, y, 0)),
+        prototype.Model(post_attach=prototype.transform(pos=Vec3(x, y, 0))),
+        prototype.Geometry(file=file),
         heat.Platform(mass=mass),
         propulsion.Propulsion(heading=angle),
         misc.TakesDamage(),
@@ -111,10 +118,10 @@ def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", 
 # player
 player = base.ecs_world.create_entity(
     tank.Tank(),
-    panda3d.Model(),
-    panda3d.Geometry(file="resources/tank.bam"),
-    panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(20, -50, 0)),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -50, 0))),
+    prototype.Geometry(file='resources/tank.bam'),
+    # panda3d.Scene(node=base.render),
+    # panda3d.Position(value=Vec3(20, -50, 0)),
     heat.Platform(mass=1111),
     propulsion.Propulsion(heading=45),
     misc.TakesDamage(),
@@ -127,28 +134,52 @@ player = base.ecs_world.create_entity(
     comm.Reporting(),
     radar.FrontRadar(),
 )
+# player = base.ecs_world.create_entity(
+#     tank.Tank(),
+#     panda3d.Model(),
+#     panda3d.Geometry(file="resources/tank.bam"),
+#     panda3d.Scene(node=base.render),
+#     panda3d.Position(value=Vec3(20, -50, 0)),
+#     heat.Platform(mass=1111),
+#     propulsion.Propulsion(heading=45),
+#     misc.TakesDamage(),
+#     laser.LaserGun(mass=500),
+#     misc.Msg(rate=0),
+#     misc.Life(hp=200),
+#     misc.TextLabel(text="-new-"),
+#     propulsion.KbdControlled(),
+#     # camera.LookAt(),
+#     comm.Reporting(),
+#     radar.FrontRadar(),
+# )
 
 print(f"created player: {player}")
 
-creat_tank(x=0, y=10, angle=45, mass=500, print_rate=0)
-creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
-creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
-creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
-creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
+# creat_tank(x=0, y=10, angle=45, mass=500, print_rate=0)
+# creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=30, y=10, angle=0, mass=2000, print_rate=120)
+# creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
+# creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
 
-# for j in range(1, 5, 2):
-#     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
+for j in range(1, 5, 2):
+    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
 #
+# circle = base.ecs_world.create_entity(
+#     panda3d.Model(),
+#     panda3d.Geometry(file='resources/circle.bam'),
+#     panda3d.Scene(node=base.render),
+#     panda3d.Position(value=Vec3(0, 0, 0)),
+# )
 circle = base.ecs_world.create_entity(
-    panda3d.Model(),
-    panda3d.Geometry(file='resources/circle.bam'),
-    panda3d.Scene(node=base.render),
-    panda3d.Position(value=Vec3(0, 0, 0)),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(0, 0, 0))),
+    prototype.Geometry(file='resources/circle.bam'),
+    # panda3d.Scene(node=base.render),
+    # panda3d.Position(value=Vec3(0, 0, 0)),
 )
 
 # the rest is to show a 50m circle
 base.ecs_world._flush_component_updates()
-circle[wp3d.Model].node.set_scale(50)
+circle[Model].node.set_scale(50)
 
 base.camera.set_pos(0, -50, 20)
 base.camLens.setFov(60)

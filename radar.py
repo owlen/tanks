@@ -1,10 +1,10 @@
-from wecs.core import Component, and_filter
-from wecs.panda3d import Model, Position, or_filter
-
 from heat import Platform
 from misc import SlowSystem
 from tank import Tank
 from turret import Turret
+from wecs.core import Component, and_filter
+from wecs.panda3d import Position, or_filter
+from wecs.panda3d.prototype import Model
 
 
 @Component()

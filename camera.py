@@ -1,9 +1,9 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import Vec3, KeyboardButton
-from wecs.core import Component, System, and_filter
-from wecs.panda3d import Model
 
 import game
+from wecs.core import Component, System, and_filter
+from wecs.panda3d.prototype import Model
 
 ZOOM_IN_KEY = KeyboardButton.ascii_key('z')
 ZOOM_OUT_KEY = KeyboardButton.ascii_key('x')

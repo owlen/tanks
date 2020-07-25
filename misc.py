@@ -1,10 +1,13 @@
+from math import sqrt
+
 from direct.particles.ParticleEffect import ParticleEffect
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import TextNode
-from wecs.core import Component, System, and_filter
-from wecs.panda3d import Model, Position, sqrt
 
 from heat import Platform
+from wecs.core import Component, System, and_filter
+from wecs.panda3d import Position
+from wecs.panda3d.prototype import Model
 
 
 @Component()

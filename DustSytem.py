@@ -2,12 +2,12 @@ from math import sqrt
 
 from direct.particles.ParticleEffect import ParticleEffect
 from panda3d.core import LVector3
-from wecs.core import Component, System, and_filter
-from wecs.panda3d import Model
 
 import game
 from misc import Life
 from propulsion import Propulsion
+from wecs.core import Component, System, and_filter
+from wecs.panda3d.prototype import Model
 
 
 @Component()
