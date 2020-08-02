@@ -3,11 +3,11 @@ from math import sqrt
 from direct.particles.ParticleEffect import ParticleEffect
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import TextNode
-
-from heat import Platform
 from wecs.core import Component, System, and_filter
 from wecs.panda3d import Position
 from wecs.panda3d.prototype import Model
+
+from heat import Platform
 
 
 @Component()
@@ -27,8 +27,8 @@ class SmokeSystem(System):
         p.loadConfig('resources/smoke.ptf')
         p.start(parent=model.node, renderParent=render)
         p.set_z(3)
-        # p0 = p.getParticlesList()[0]
-        # p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 3.0000))
+        # p0 = p.get_particles_list()[0]
+        # p0.emitter.set_offset_force(LVector3(0.0000, 0.0000, 3.0000))
         entity[Smoking].particle_mgr = p
 
     def update(self, entities_by_filter):
@@ -58,20 +58,20 @@ class TextLabelSystem(System):
         model = entity[Model]
         text = entity[TextLabel].text
         entity[TextLabel].text_node = TextNode('text node')
-        entity[TextLabel].text_node.setText(text)
-        entity[TextLabel].text_node.setAlign(TextNode.ACenter)
-        entity[TextLabel].text_node.setTextColor(1, 1, 0.2, 1)
-        # entity[TextLabel].text_node.setShadow(0.05, 0.05)
-        # entity[TextLabel].text_node.setShadowColor(0.2, 0.2, 1, 1)
+        entity[TextLabel].text_node.set_text(text)
+        entity[TextLabel].text_node.set_align(TextNode.ACenter)
+        entity[TextLabel].text_node.set_text_color(1, 1, 0.2, 1)
+        # entity[TextLabel].text_node.set_shadow(0.05, 0.05)
+        # entity[TextLabel].text_node.set_shadow_color(0.2, 0.2, 1, 1)
 
         text_node_path = model.node.attachNewNode(entity[TextLabel].text_node)
-        text_node_path.setScale(2)
+        text_node_path.set_scale(2)
         text_node_path.set_pos(0, 0, 4)
-        text_node_path.setBillboardPointEye()
+        text_node_path.set_billboard_point_eye()
 
     def update(self, entities_by_filter):
         for entity in entities_by_filter['labels']:
-            entity[TextLabel].text_node.setText(entity[TextLabel].text)
+            entity[TextLabel].text_node.set_text(entity[TextLabel].text)
 
 
 @Component()

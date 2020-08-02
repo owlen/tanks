@@ -2,12 +2,12 @@ from math import sqrt
 
 from direct.particles.ParticleEffect import ParticleEffect
 from panda3d.core import LVector3
+from wecs.core import Component, System, and_filter
+from wecs.panda3d.prototype import Model
 
 import game
 from misc import Life
 from propulsion import Propulsion
-from wecs.core import Component, System, and_filter
-from wecs.panda3d.prototype import Model
 
 
 @Component()
@@ -34,8 +34,8 @@ class DustSystem(System):
         p.loadConfig('resources/dust.ptf')
         # p.start(parent=model.node, renderParent=render)
         p.set_y(-3)
-        p0 = p.getParticlesList()[0]
-        p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 2.0000))
+        p0 = p.get_particles_list()[0]
+        p0.emitter.set_offset_force(LVector3(0.0000, 0.0000, 2.0000))
         entity[Duster].particle_mgr = p
         entity[Duster].dust_factor = 1000 / entity[Propulsion].mass
 
@@ -49,7 +49,7 @@ class DustSystem(System):
                 else:
                     # TODO should be jerk = change in acceleration
                     r = duster.dust_factor / moving.velocity
-                    duster.particle_mgr.getParticlesList()[0].setBirthRate(r)
+                    duster.particle_mgr.get_particles_list()[0].set_birth_rate(r)
             elif moving.velocity > 3:
                 # duster.particle_mgr.enable()
                 duster.particle_mgr.start(parent=entity[Model].node, renderParent=game.render)
@@ -72,8 +72,8 @@ class SmokeSystem(System):
         p.loadConfig('resources/smoke.ptf')
         p.start(parent=model.node, renderParent=render)
         p.set_z(3)
-        # p0 = p.getParticlesList()[0]
-        # p0.emitter.setOffsetForce(LVector3(0.0000, 0.0000, 3.0000))
+        # p0 = p.get_particles_list()[0]
+        # p0.emitter.set_offset_force(LVector3(0.0000, 0.0000, 3.0000))
         entity[Smoking].particle_mgr = p
 
     def update(self, entities_by_filter):

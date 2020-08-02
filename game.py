@@ -1,6 +1,11 @@
 import builtins
 
+import wecs.panda3d as wp3d
 from panda3d.core import Vec3, CardMaker
+from wecs import panda3d
+from wecs.mechanics import clock
+from wecs.panda3d import prototype
+from wecs.panda3d.prototype import Model
 
 import DustSytem
 import camera
@@ -12,11 +17,6 @@ import propulsion
 import radar
 import tank
 import turret
-import wecs.panda3d as wp3d
-from wecs import panda3d
-from wecs.mechanics import clock
-from wecs.panda3d import prototype
-from wecs.panda3d.prototype import Model
 
 system_types = [
 
@@ -95,9 +95,11 @@ def create_turret(x, y):
 
 
 create_turret(20, 0)
-create_turret(-20, 0)
-create_turret(0, 20)
-create_turret(0, -20)
+
+
+# create_turret(-20, 0)
+# create_turret(0, 20)
+# create_turret(0, -20)
 
 
 # noinspection PyUnusedLocal
@@ -120,8 +122,6 @@ player = base.ecs_world.create_entity(
     tank.Tank(),
     prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -50, 0))),
     prototype.Geometry(file='resources/tank.bam'),
-    # panda3d.Scene(node=base.render),
-    # panda3d.Position(value=Vec3(20, -50, 0)),
     heat.Platform(mass=1111),
     propulsion.Propulsion(heading=45),
     misc.TakesDamage(),
@@ -134,24 +134,6 @@ player = base.ecs_world.create_entity(
     comm.Reporting(),
     radar.FrontRadar(),
 )
-# player = base.ecs_world.create_entity(
-#     tank.Tank(),
-#     panda3d.Model(),
-#     panda3d.Geometry(file="resources/tank.bam"),
-#     panda3d.Scene(node=base.render),
-#     panda3d.Position(value=Vec3(20, -50, 0)),
-#     heat.Platform(mass=1111),
-#     propulsion.Propulsion(heading=45),
-#     misc.TakesDamage(),
-#     laser.LaserGun(mass=500),
-#     misc.Msg(rate=0),
-#     misc.Life(hp=200),
-#     misc.TextLabel(text="-new-"),
-#     propulsion.KbdControlled(),
-#     # camera.LookAt(),
-#     comm.Reporting(),
-#     radar.FrontRadar(),
-# )
 
 print(f"created player: {player}")
 
@@ -161,15 +143,8 @@ print(f"created player: {player}")
 # creat_tank(x=-30, y=-10, angle=0, mass=200, print_rate=120)
 # creat_tank(x=-0, y=-20, angle=0, mass=8000, print_rate=120)
 
-for j in range(1, 5, 2):
-    creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
-#
-# circle = base.ecs_world.create_entity(
-#     panda3d.Model(),
-#     panda3d.Geometry(file='resources/circle.bam'),
-#     panda3d.Scene(node=base.render),
-#     panda3d.Position(value=Vec3(0, 0, 0)),
-# )
+# for j in range(1, 5, 2):
+#     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
 circle = base.ecs_world.create_entity(
     prototype.Model(post_attach=prototype.transform(pos=Vec3(0, 0, 0))),
     prototype.Geometry(file='resources/circle.bam'),
@@ -182,9 +157,9 @@ base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
 base.camera.set_pos(0, -50, 20)
-base.camLens.setFov(60)
+base.camLens.set_fov(60)
 base.camera.set_pos(0, -80, 40)
-base.camLens.setFov(70)
+base.camLens.set_fov(70)
 base.camera.look_at(0, 0, -10)
 
 base.enableParticles()
@@ -193,6 +168,6 @@ groundTexture = loader.loadTexture("resources/ground1.jpg")
 cm = CardMaker('card')
 cm.set_frame(-50, 50, -50, 50)
 card = render.attachNewNode(cm.generate())
-card.setP(-90)
-card.setZ(-1)
-card.setTexture(groundTexture)
+card.set_p(-90)
+card.set_z(-1)
+card.set_texture(groundTexture)

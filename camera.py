@@ -1,9 +1,9 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import Vec3, KeyboardButton
-
-import game
 from wecs.core import Component, System, and_filter
 from wecs.panda3d.prototype import Model
+
+import game
 
 ZOOM_IN_KEY = KeyboardButton.ascii_key('z')
 ZOOM_OUT_KEY = KeyboardButton.ascii_key('x')
@@ -32,8 +32,8 @@ class CameraSystem(System):
         base = game.base
         camera = game.base.camera
         if base.mouseWatcherNode.hasMouse():
-            x = base.mouseWatcherNode.getMouseX()
-            y = base.mouseWatcherNode.getMouseY()
+            x = base.mouseWatcherNode.get_mouse_x()
+            y = base.mouseWatcherNode.get_mouse_y()
             if abs(x) > 0.7:
                 camera.set_pos(camera, 20 * x * globalClock.dt, 0, 0)
             if abs(y) > 0.7 and camera.get_p() > -85:

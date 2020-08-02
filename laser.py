@@ -1,12 +1,12 @@
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import CollisionHandlerQueue, CollisionTraverser, LineSegs, VBase4, CollisionSegment, CollisionNode, \
     CollisionSphere, KeyboardButton
+from wecs.core import System, and_filter, Component
+from wecs.panda3d.prototype import Model
 
 import game
 from heat import Platform, HeatSystem
 from misc import TakesDamage, Life, Msg
-from wecs.core import System, and_filter, Component
-from wecs.panda3d.prototype import Model
 
 LASER_KEY = KeyboardButton.ascii_key('l')
 
@@ -92,9 +92,9 @@ class LaserSystem(HeatSystem, System):
 
     def update(self, entities_by_filter):
         self.traverser.traverse(game.base.render)
-        for entry in self.queue.getEntries():
-            life = entry.getIntoNodePath().get_python_tag('live')
-            damage = entry.getFromNodePath().get_python_tag('damage')
+        for entry in self.queue.get_entries():
+            life = entry.get_into_node_path().get_python_tag('live')
+            damage = entry.get_from_node_path().get_python_tag('damage')
             life.accum_damage += damage
 
         for gun in entities_by_filter['guns']:
@@ -105,10 +105,10 @@ class LaserSystem(HeatSystem, System):
 
             if not laser_gun.fire_time:
                 if game.base.mouseWatcherNode.is_button_down(LASER_KEY):
-                    laser_gun.fire_time = globalClock.getRealTime()
+                    laser_gun.fire_time = globalClock.get_real_time()
                 else:
                     continue
             laser_gun.laser_np.show()
-            if globalClock.getRealTime() - laser_gun.fire_time > self.duration:
+            if globalClock.get_real_time() - laser_gun.fire_time > self.duration:
                 laser_gun.laser_np.hide()
                 laser_gun.fire_time = None
