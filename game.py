@@ -1,6 +1,7 @@
 import builtins
 
 import wecs.panda3d as wp3d
+from panda3d.bullet import BulletRigidBodyNode, BulletSphereShape, BulletWorld
 from panda3d.core import Vec3, CardMaker
 from wecs import panda3d
 from wecs.mechanics import clock
@@ -117,10 +118,24 @@ def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", 
     )
 
 
+bullet_world = BulletWorld()
+bullet_world.set_gravity(Vec3(0, 0, -9.81))
+world = base.ecs_world.create_entity(
+    clock.Clock(clock=clock.panda3d_clock),
+    prototype.PhysicsWorld(world=bullet_world, timestep=1 / 30),
+)
+
 # player
+bullet_body = BulletRigidBodyNode()
+bullet_body.set_linear_sleep_threshold(0)
+bullet_body.set_angular_sleep_threshold(0)
+bullet_body.set_mass(1.0)
+
+bullet_body.add_shape(BulletSphereShape(3))
+
 player = base.ecs_world.create_entity(
     tank.Tank(),
-    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -50, 0))),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -50, 20))),
     prototype.Geometry(file='resources/tank.bam'),
     heat.Platform(mass=1111),
     propulsion.Propulsion(heading=45),
@@ -133,6 +148,11 @@ player = base.ecs_world.create_entity(
     # camera.LookAt(),
     comm.Reporting(),
     radar.FrontRadar(),
+    prototype.PhysicsBody(
+        body=bullet_body,
+        world=world._uid,
+    ),
+
 )
 
 print(f"created player: {player}")
