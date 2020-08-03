@@ -1,8 +1,8 @@
 import builtins
 
 import wecs.panda3d as wp3d
-from panda3d.bullet import BulletRigidBodyNode, BulletSphereShape, BulletWorld
-from panda3d.core import Vec3, CardMaker
+from panda3d.bullet import BulletRigidBodyNode, BulletWorld, BulletBoxShape, BulletDebugNode
+from panda3d.core import Vec3, CardMaker, TransformState, Point3
 from wecs import panda3d
 from wecs.mechanics import clock
 from wecs.panda3d import prototype
@@ -125,17 +125,43 @@ world = base.ecs_world.create_entity(
     prototype.PhysicsWorld(world=bullet_world, timestep=1 / 30),
 )
 
-# player
-bullet_body = BulletRigidBodyNode()
-bullet_body.set_linear_sleep_threshold(0)
-bullet_body.set_angular_sleep_threshold(0)
-bullet_body.set_mass(1.0)
+debugNode = BulletDebugNode('Debug')
+debugNode.showWireframe(True)
+debugNode.showConstraints(True)
+debugNode.showBoundingBoxes(False)
+debugNode.showNormals(False)
+debugNP = render.attachNewNode(debugNode)
+debugNP.show()
+bullet_world.setDebugNode(debugNP.node())
 
-bullet_body.add_shape(BulletSphereShape(3))
+bullet_floor = BulletRigidBodyNode()
+bullet_floor.set_mass(0.0)
+bullet_floor.add_shape(
+    BulletBoxShape(Vec3(50, 50, 0)),
+    TransformState.makePos(Point3(0, 0, 0)),
+)
+
+base.ecs_world.create_entity(
+    prototype.Model(
+        post_attach=prototype.transform(pos=Vec3(0, 0, -1)),
+    ),
+    prototype.PhysicsBody(
+        body=bullet_floor,
+        world=world._uid,
+    ),
+)
+
+# player
+bullet_tank = BulletRigidBodyNode()
+bullet_tank.set_linear_sleep_threshold(0)
+bullet_tank.set_angular_sleep_threshold(0)
+bullet_tank.set_mass(100.0)
+
+bullet_tank.add_shape(BulletBoxShape(Vec3(2.5, 3, 1)), TransformState.make_pos(Point3(0, 0, 1)))
 
 player = base.ecs_world.create_entity(
     tank.Tank(),
-    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -50, 20))),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -49, 20))),
     prototype.Geometry(file='resources/tank.bam'),
     heat.Platform(mass=1111),
     propulsion.Propulsion(heading=45),
@@ -149,7 +175,7 @@ player = base.ecs_world.create_entity(
     comm.Reporting(),
     radar.FrontRadar(),
     prototype.PhysicsBody(
-        body=bullet_body,
+        body=bullet_tank,
         world=world._uid,
     ),
 
