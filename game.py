@@ -78,31 +78,6 @@ def creat_tank(x=0, y=0, angle=45, mass=2000, file="resources/tank.bam", print_r
     print(f"Created tank:{t}")
 
 
-def create_turret(x, y):
-    base.ecs_world.create_entity(
-        turret.Turret(rotate_speed=30),
-        prototype.Model(post_attach=prototype.transform(pos=Vec3(x, y, 0))),
-        prototype.Geometry(file='resources/ground_turret.bam'),
-        # panda3d.Scene(node=base.render),
-        # panda3d.Position(value=Vec3(x, y, 0)),
-        heat.Platform(mass=500),
-        misc.TakesDamage(sphere_size=1),
-        laser.LaserGun(damage=1, nozzle_length=2, range=25, temp=100),
-        misc.Msg(rate=0),
-        misc.Life(hp=30),
-        # misc.Reporting(),
-        misc.TextLabel(text="-new-"),
-    )
-
-
-create_turret(20, 0)
-
-
-# create_turret(-20, 0)
-# create_turret(0, 20)
-# create_turret(0, -20)
-
-
 # noinspection PyUnusedLocal
 def creat_tank_target(x=0, y=0, angle=90, mass=2000, file="resources/tank.bam", print_rate=0):
     return base.ecs_world.create_entity(
@@ -136,19 +111,11 @@ bullet_world.setDebugNode(debugNP.node())
 
 bullet_floor = BulletRigidBodyNode()
 bullet_floor.set_mass(0.0)
-bullet_floor.add_shape(
-    BulletBoxShape(Vec3(50, 50, 0)),
-    TransformState.makePos(Point3(0, 0, 0)),
-)
-
+bullet_floor.add_shape(BulletBoxShape(Vec3(50, 50, 0)),
+                       TransformState.make_pos(Point3(0, 0, 0)))
 base.ecs_world.create_entity(
-    prototype.Model(
-        post_attach=prototype.transform(pos=Vec3(0, 0, -1)),
-    ),
-    prototype.PhysicsBody(
-        body=bullet_floor,
-        world=world._uid,
-    ),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(0, 0, 0)), ),
+    prototype.PhysicsBody(body=bullet_floor, world=world._uid, ),
 )
 
 # player
@@ -157,12 +124,14 @@ bullet_tank.set_linear_sleep_threshold(0)
 bullet_tank.set_angular_sleep_threshold(0)
 bullet_tank.set_mass(100.0)
 
-bullet_tank.add_shape(BulletBoxShape(Vec3(2.5, 3, 1)), TransformState.make_pos(Point3(0, 0, 1)))
+bullet_tank.add_shape(BulletBoxShape(Vec3(2.5, 3, 1)),
+                      TransformState.make_pos(Point3(0, 0, 1)))
 
 player = base.ecs_world.create_entity(
     tank.Tank(),
-    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -49, 20))),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(20, -49, 5))),
     prototype.Geometry(file='resources/tank.bam'),
+    prototype.PhysicsBody(body=bullet_tank, world=world._uid, ),
     heat.Platform(mass=1111),
     propulsion.Propulsion(heading=45),
     misc.TakesDamage(),
@@ -174,14 +143,39 @@ player = base.ecs_world.create_entity(
     # camera.LookAt(),
     comm.Reporting(),
     radar.FrontRadar(),
-    prototype.PhysicsBody(
-        body=bullet_tank,
-        world=world._uid,
-    ),
 
 )
-
 print(f"created player: {player}")
+
+
+def create_turret(x, y):
+    bullet_turret = BulletRigidBodyNode()
+    bullet_turret.set_linear_sleep_threshold(0)
+    bullet_turret.set_angular_sleep_threshold(0)
+    bullet_turret.set_mass(100.0)
+
+    bullet_turret.add_shape(BulletBoxShape(Vec3(1, 1, 1)), TransformState.make_pos(Point3(0, 0, 1)))
+    base.ecs_world.create_entity(
+        turret.Turret(rotate_speed=30),
+        prototype.Model(post_attach=prototype.transform(pos=Vec3(x, y, 0))),
+        prototype.Geometry(file='resources/ground_turret.bam'),
+        prototype.PhysicsBody(body=bullet_turret, world=world._uid, ),
+        heat.Platform(mass=500),
+        misc.TakesDamage(sphere_size=1),
+        laser.LaserGun(damage=1, nozzle_length=2, range=25, temp=100),
+        misc.Msg(rate=0),
+        misc.Life(hp=30),
+        # misc.Reporting(),
+        misc.TextLabel(text="-new-"),
+
+    )
+
+
+create_turret(20, 0)
+# create_turret(-20, 0)
+# create_turret(0, 20)
+# create_turret(0, -20)
+
 
 # creat_tank(x=0, y=10, angle=45, mass=500, print_rate=0)
 # creat_tank(x=10, y=0, angle=0, mass=2000, print_rate=120)
@@ -192,13 +186,11 @@ print(f"created player: {player}")
 # for j in range(1, 5, 2):
 #     creat_tank_target(20 * j - 60, -2 + 10 * j, mass=500 * j)
 circle = base.ecs_world.create_entity(
-    prototype.Model(post_attach=prototype.transform(pos=Vec3(0, 0, 0))),
+    prototype.Model(post_attach=prototype.transform(pos=Vec3(0, 0, .1))),
     prototype.Geometry(file='resources/circle.bam'),
-    # panda3d.Scene(node=base.render),
-    # panda3d.Position(value=Vec3(0, 0, 0)),
 )
 
-# the rest is to show a 50m circle
+# show a 50m circle
 base.ecs_world._flush_component_updates()
 circle[Model].node.set_scale(50)
 
@@ -215,5 +207,5 @@ cm = CardMaker('card')
 cm.set_frame(-50, 50, -50, 50)
 card = render.attachNewNode(cm.generate())
 card.set_p(-90)
-card.set_z(-1)
+card.set_z(0)
 card.set_texture(groundTexture)
