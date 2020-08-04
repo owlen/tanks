@@ -1,14 +1,13 @@
 from direct.showbase.ShowBaseGlobal import globalClock
-from panda3d.core import KeyboardButton
+from panda3d.core import KeyboardButton, Vec3
+from wecs.core import Component
+from wecs.core import System
+from wecs.core import and_filter
+from wecs.panda3d.prototype import Model, PhysicsBody
 
 import game
 from heat import Platform
 from misc import Msg
-from wecs.core import Component
-from wecs.core import System
-from wecs.core import and_filter
-from wecs.panda3d import Position
-from wecs.panda3d.prototype import Model
 
 
 @Component()
@@ -26,7 +25,7 @@ class Propulsion:
 class PropulsionSystem(System):
     entity_filters = {
         'movers': and_filter([
-            Position,
+            PhysicsBody,
             Platform,
             Propulsion,
             Msg,
@@ -37,6 +36,7 @@ class PropulsionSystem(System):
         dt = globalClock.dt
         for entity in entities_by_filter['movers']:
             moving_mass = entity[Propulsion]
+            ph_body = entity[PhysicsBody]
             model = entity[Model]
             mass = entity[Platform].mass  # connect to host platform
 
@@ -58,9 +58,10 @@ class PropulsionSystem(System):
             moving_mass.heading = moving_mass.heading % 360
             model.node.set_h(moving_mass.heading)
 
-            model.node.set_pos(model.node, (0, moving_mass.velocity * dt, 0))
+            # model.node.set_pos(model.node, (0, moving_mass.velocity * dt, 0))
+            entity[PhysicsBody].body.applyCentralImpulse(Vec3(0, 1000 * dt, 0))
 
-            entity[Position].value = entity[Model].node.get_pos()
+            # entity[Position].value = entity[Model].node.get_pos()
 
             entity[Msg].msg = f"heading:{moving_mass.heading:>3.2f}"
             # f"Weight:{mass:>4} temp:{entity[Platform].temp} speed:{moving_mass.velocity: >6.2f} " \

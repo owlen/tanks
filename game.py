@@ -122,7 +122,7 @@ base.ecs_world.create_entity(
 bullet_tank = BulletRigidBodyNode()
 bullet_tank.set_linear_sleep_threshold(0)
 bullet_tank.set_angular_sleep_threshold(0)
-bullet_tank.set_mass(100.0)
+bullet_tank.set_mass(250.0)
 
 bullet_tank.add_shape(BulletBoxShape(Vec3(2.5, 3, 1)),
                       TransformState.make_pos(Point3(0, 0, 1)))
@@ -152,7 +152,7 @@ def create_turret(x, y):
     bullet_turret = BulletRigidBodyNode()
     bullet_turret.set_linear_sleep_threshold(0)
     bullet_turret.set_angular_sleep_threshold(0)
-    bullet_turret.set_mass(100.0)
+    bullet_turret.set_mass(700.0)
 
     bullet_turret.add_shape(BulletBoxShape(Vec3(1, 1, 1)), TransformState.make_pos(Point3(0, 0, 1)))
     base.ecs_world.create_entity(
